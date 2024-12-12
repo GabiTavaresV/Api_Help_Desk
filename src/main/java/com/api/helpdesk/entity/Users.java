@@ -25,7 +25,7 @@ public class Users {
     private String email;
 
     @OneToMany(mappedBy = "customer")
-    @JsonIgnore // Isso evita que a lista de tickets seja serializada
+    @JsonIgnore
     private List<Ticket> tickets;
 
     public Long getId() {

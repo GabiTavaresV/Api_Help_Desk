@@ -1,8 +1,6 @@
 package com.api.helpdesk.repository;
 
-import com.api.helpdesk.entity.Device;
 import com.api.helpdesk.entity.Ticket;
-import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

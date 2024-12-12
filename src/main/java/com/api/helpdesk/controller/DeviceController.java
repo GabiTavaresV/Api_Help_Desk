@@ -2,9 +2,7 @@ package com.api.helpdesk.controller;
 
 
 import com.api.helpdesk.entity.Device;
-import com.api.helpdesk.entity.Users;
 import com.api.helpdesk.service.DeviceService;
-import com.api.helpdesk.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

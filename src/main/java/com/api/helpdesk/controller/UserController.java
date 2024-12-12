@@ -1,6 +1,5 @@
 package com.api.helpdesk.controller;
 
-import com.api.helpdesk.entity.Attendant;
 import com.api.helpdesk.entity.Users;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,6 @@
 package com.api.helpdesk.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class Attendant {
     private String name;
 
     @OneToMany(mappedBy = "attendant")
-    @JsonIgnore // Para evitar a serialização de desks ao serializar um atendente
+    @JsonIgnore
     private List<Desk> desks = new ArrayList<>();
 
     public Long getId() {
