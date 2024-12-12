@@ -8,6 +8,9 @@ public class TicketDTO {
     private String reason;
     private TicketStatus status;
     private UserDTO customer;
+    private DeviceDTO device;
+    private AttendantDTO attendant;
+    private DeskDTO desk;
 
     public Long getId() {
         return id;
@@ -39,5 +42,29 @@ public class TicketDTO {
 
     public void setStatus(TicketStatus status) {
         this.status = status;
+    }
+
+    public DeviceDTO getDevice() {
+        return device;
+    }
+
+    public void setDevice(DeviceDTO device) {
+        this.device = device;
+    }
+
+    public AttendantDTO getAttendant() {
+        return attendant;
+    }
+
+    public void setAttendant(AttendantDTO attendant) {
+        this.attendant = attendant;
+    }
+
+    public DeskDTO getDesk() {
+        return desk;
+    }
+
+    public void setDesk(DeskDTO desk) {
+        this.desk = desk;
     }
 }
