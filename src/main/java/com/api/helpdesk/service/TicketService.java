@@ -1,8 +1,7 @@
 package com.api.helpdesk.service;
 
 
-import com.api.helpdesk.dto.TicketDTO;
-import com.api.helpdesk.dto.UserDTO;
+import com.api.helpdesk.dto.*;
 import com.api.helpdesk.entity.Desk;
 import com.api.helpdesk.entity.Device;
 import com.api.helpdesk.entity.Ticket;
@@ -73,6 +72,28 @@ public class TicketService {
             userDTO.setEmail(ticket.getCustomer().getEmail());
 
             ticketDTO.setCustomer(userDTO);
+        }
+
+        if (ticket.getDevice() != null) {
+            DeviceDTO deviceDTO = new DeviceDTO();
+            deviceDTO.setId(ticket.getDevice().getId());
+            deviceDTO.setSerialNumber(ticket.getDevice().getSerialNumber());
+
+            ticketDTO.setDevice(deviceDTO);
+        }
+
+        if (ticket.getDesk() != null) {
+            DeskDTO deskDTO = new DeskDTO();
+            deskDTO.setId(ticket.getDesk().getId());
+
+            ticketDTO.setDesk(deskDTO);
+        }
+
+        if (ticket.getDesk().getAttendant() != null) {
+            AttendantDTO attendantDTO = new AttendantDTO();
+            attendantDTO.setId(ticket.getDesk().getAttendant().getId());
+            attendantDTO.setName(ticket.getDesk().getAttendant().getName()); // ou outro campo relevante
+            ticketDTO.setAttendant(attendantDTO);
         }
 
         return ticketDTO;
