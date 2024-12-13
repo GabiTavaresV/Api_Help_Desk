@@ -3,8 +3,8 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.entity.Attendant;
 import com.api.helpdesk.entity.Desk;
+import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.repository.DeskRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +32,8 @@ public class DeskService {
         return deskRepository.findAll();
     }
 
-    public Desk getDeskById(Long id) {
+    public Desk getDeskById(Long id) throws NotFoundDBException {
         return deskRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Desk not found"));
+                .orElseThrow(() -> new NotFoundDBException("Balcão não encontrado!"));
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import com.api.helpdesk.exception.NotFoundDBException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,13 +53,13 @@ public class TicketService {
         return ticketRepository.findAll(pageable).getContent();
     }
 
-    public Page<Ticket> listTicketsByCustomerId(Long customerId, Pageable pageable) {
+    public Page<Ticket> listTicketsByCustomerId(Long customerId, Pageable pageable)  {
         return ticketRepository.findByCustomerId(customerId, pageable);
     }
 
-    public TicketDTO getTicketDetails(Long id) {
+    public TicketDTO getTicketDetails(Long id) throws NotFoundDBException {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+                .orElseThrow(() -> new NotFoundDBException("Chamado não encontrado!"));
 
         TicketDTO ticketDTO = new TicketDTO();
         ticketDTO.setId(ticket.getId());

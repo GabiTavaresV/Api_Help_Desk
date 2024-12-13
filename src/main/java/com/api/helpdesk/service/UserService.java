@@ -1,7 +1,7 @@
 package com.api.helpdesk.service;
 
+import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.api.helpdesk.entity.Users;
@@ -23,8 +23,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Users getUserById(Long id) {
+    public Users getUserById(Long id) throws NotFoundDBException {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundDBException("Usuário não encontrado!"));
     }
 }

@@ -1,8 +1,8 @@
 package com.api.helpdesk.service;
 
 import com.api.helpdesk.entity.Attendant;
+import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.repository.AttendantRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +22,9 @@ public class AttendantService {
         return attendantRepository.findAll();
     }
 
-    public Attendant getAttendantById(Long id) {
+    public Attendant getAttendantById(Long id) throws NotFoundDBException {
         return attendantRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Attendant not found"));
+                .orElseThrow(() -> new NotFoundDBException("Atendente Não encontrado!"));
     }
+
 }

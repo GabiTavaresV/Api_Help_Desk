@@ -1,8 +1,8 @@
 package com.api.helpdesk.service;
 
 import com.api.helpdesk.entity.Device;
+import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.repository.DeviceRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +23,9 @@ public class DeviceService {
         return deviceRepository.findAll();
     }
 
-    public Device getDeviceById(Long id) {
+    public Device getDeviceById(Long id) throws NotFoundDBException {
         return deviceRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Device not found"));
+                .orElseThrow(() -> new NotFoundDBException("Aparelho não encontrado!"));
 
     }
 }
