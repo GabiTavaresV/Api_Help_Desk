@@ -25,12 +25,14 @@ public class UserController {
     }
 
     @GetMapping("/findAll")
-    public List<UserDTO> getAll() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAll() {
+        List<UserDTO> list = userService.getAllUsers();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public UserDTO getById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
+        UserDTO user = userService.getUserById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
