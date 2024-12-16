@@ -19,6 +19,7 @@ public class AttendantService {
     private final AttendantMapper attendantMapper = new AttendantMapper();
 
     public AttendantDTO register(AttendantDTO attendantDTO) {
+
         Attendant attendant = attendantMapper.toEntity(attendantDTO);
         Attendant savedAttendant = attendantRepository.save(attendant);
         return attendantMapper.toDTO(savedAttendant);
