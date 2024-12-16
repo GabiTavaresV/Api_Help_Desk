@@ -1,7 +1,7 @@
 package com.api.helpdesk.controller;
 
 
-import com.api.helpdesk.entity.Device;
+import com.api.helpdesk.dto.DeviceDTO;
 import com.api.helpdesk.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +16,17 @@ public class DeviceController {
     private DeviceService deviceService;
 
     @PostMapping
-    public Device create(@RequestBody Device device) {
+    public DeviceDTO create(@RequestBody DeviceDTO device) {
         return deviceService.createDevice(device);
     }
 
     @GetMapping("/findAll")
-    public List<Device> getAll() {
+    public List<DeviceDTO> getAll() {
         return deviceService.getAllDevices();
     }
 
     @GetMapping("/{id}")
-    public Device getById(@PathVariable Long id) {
+    public DeviceDTO getById(@PathVariable Long id) {
         return deviceService.getDeviceById(id);
     }
 }
