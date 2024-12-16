@@ -2,10 +2,17 @@ package com.api.helpdesk.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "desk")
 public class Desk {
@@ -22,33 +29,5 @@ public class Desk {
     @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>();
 
-    public Desk() {}
 
-    public Desk(Attendant attendant) {
-        this.attendant = attendant;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public Attendant getAttendant() {
-        return attendant;
-    }
-
-    public void setAttendant(Attendant attendant) {
-        this.attendant = attendant;
-    }
 }

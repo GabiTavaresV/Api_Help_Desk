@@ -1,21 +1,18 @@
 package com.api.helpdesk.dto;
 
+
+import lombok.*;
+
+@Builder
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class DeskDTO {
     private Long id;
+    private AttendantDTO attendant;
 
-    public DeskDTO() {
-        this.id = id;
-    }
 
-    public DeskDTO(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
