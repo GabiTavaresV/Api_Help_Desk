@@ -70,44 +70,6 @@ public class TicketService {
     public Ticket getTicketDetails(Long id) throws NotFoundDBException {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new NotFoundDBException("Chamado não encontrado!"));
-
-//        TicketDTO ticketDTO = new TicketDTO();
-//        ticketDTO.setId(ticket.getId());
-//        ticketDTO.setReason(ticket.getReason());
-//        ticketDTO.setStatus(ticket.getStatus());
-//
-//        if (ticket.getCustomer() != null) {
-//            UserDTO userDTO = new UserDTO();
-//            userDTO.setId(ticket.getCustomer().getId());
-//            userDTO.setName(ticket.getCustomer().getName());
-//            userDTO.setEmail(ticket.getCustomer().getEmail());
-//
-//            ticketDTO.setCustomer(userDTO);
-//        }
-//
-//        if (ticket.getDevice() != null) {
-//            DeviceDTO deviceDTO = new DeviceDTO();
-//            deviceDTO.setId(ticket.getDevice().getId());
-//            deviceDTO.setSerialNumber(ticket.getDevice().getSerialNumber());
-//            ticketDTO.setDevice(deviceDTO);
-//        }
-//
-//        if (ticket.getDesk() != null) {
-//            DeskDTO deskDTO = new DeskDTO();
-//            deskDTO.setId(ticket.getDesk().getId());
-//
-//            ticketDTO.setDesk(deskDTO);
-//        }
-//
-//        if (ticket.getDesk().getAttendant() != null) {
-//            AttendantDTO attendantDTO = new AttendantDTO();
-//            attendantDTO.setId(ticket.getDesk().getAttendant().getId());
-//            attendantDTO.setName(ticket.getDesk().getAttendant().getName());
-//            ticketDTO.setAttendant(attendantDTO);
-//        }
-//
-//        return ticketDTO;
-
         return ticket;
     }
 
