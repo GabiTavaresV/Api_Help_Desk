@@ -4,6 +4,8 @@ package com.api.helpdesk.controller;
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.service.AttendantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,17 +18,20 @@ public class AttendantController {
     private AttendantService attendantService;
 
     @PostMapping
-    public AttendantDTO create(@RequestBody AttendantDTO attendant) {
-        return attendantService.register(attendant);
+    public ResponseEntity<AttendantDTO> create(@RequestBody AttendantDTO attendant) {
+        AttendantDTO createUser = attendantService.register(attendant);
+        return new ResponseEntity<>(createUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/findAll")
-    public List<AttendantDTO> getAll() {
-        return attendantService.getAllAttendants();
+    public ResponseEntity<List<AttendantDTO>> getAll() {
+        List<AttendantDTO> list = attendantService.getAllAttendants();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public AttendantDTO getById(@PathVariable Long id) {
-        return attendantService.getAttendantById(id);
+    public ResponseEntity<AttendantDTO> getById(@PathVariable Long id) {
+        AttendantDTO attendant = attendantService.getAttendantById(id);
+        return new ResponseEntity<>(attendant, HttpStatus.OK);
     }
 }
