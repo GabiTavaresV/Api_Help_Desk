@@ -1,7 +1,14 @@
 package com.api.helpdesk.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+@Builder
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "device")
 public class Device {
@@ -10,29 +17,9 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Getter
+    @Setter
     private String serialNumber;
 
 
-    public Device() {}
-
-    public Device(Long id, String serialNumber) {
-        this.id = id;
-        this.serialNumber = serialNumber;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
 }
