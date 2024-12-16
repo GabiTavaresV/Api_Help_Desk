@@ -23,9 +23,7 @@ public class TicketController {
 
     @PostMapping
     public TicketDTO create(@RequestBody TicketRequest ticketRequest) {
-        System.out.println("Parametros Controller: " + ticketRequest);
         return ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason(), ticketRequest.getAttendantId());
-
     }
 
     @GetMapping("/findAll")
