@@ -1,7 +1,7 @@
 package com.api.helpdesk.controller;
 
 
-import com.api.helpdesk.entity.Attendant;
+import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.service.AttendantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +16,17 @@ public class AttendantController {
     private AttendantService attendantService;
 
     @PostMapping
-    public Attendant create(@RequestBody Attendant attendant) {
+    public AttendantDTO create(@RequestBody AttendantDTO attendant) {
         return attendantService.register(attendant);
     }
 
     @GetMapping("/findAll")
-    public List<Attendant> getAll() {
+    public List<AttendantDTO> getAll() {
         return attendantService.getAllAttendants();
     }
 
     @GetMapping("/{id}")
-    public Attendant getById(@PathVariable Long id) {
+    public AttendantDTO getById(@PathVariable Long id) {
         return attendantService.getAttendantById(id);
     }
 }
