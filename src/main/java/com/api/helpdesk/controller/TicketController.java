@@ -22,8 +22,9 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping
-    public Ticket create(@RequestBody TicketRequest ticketRequest) {
-        return ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason());
+    public TicketDTO create(@RequestBody TicketRequest ticketRequest) {
+        System.out.println("Parametros Controller: " + ticketRequest);
+        return ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason(), ticketRequest.getAttendantId());
 
     }
 
@@ -33,7 +34,7 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    public TicketDTO getById(@PathVariable Long id) {
+    public Ticket getById(@PathVariable Long id) {
         return ticketService.getTicketDetails(id);
     }
 
