@@ -1,9 +1,10 @@
 package com.api.helpdesk.controller;
 
 import com.api.helpdesk.dto.DeskDTO;
-import com.api.helpdesk.service.AttendantService;
 import com.api.helpdesk.service.DeskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,21 +16,21 @@ public class DeskController {
     @Autowired
     private DeskService deskService;
 
-    @Autowired
-    private AttendantService attendantService;
-
     @PostMapping
-    public DeskDTO create(@RequestBody DeskDTO desk) {
-       return deskService.register(desk);
+    public ResponseEntity<DeskDTO> create(@RequestBody DeskDTO desk) {
+        DeskDTO createDesk = deskService.register(desk);
+        return new ResponseEntity<>(createDesk, HttpStatus.CREATED);
     }
 
     @GetMapping("/findAll")
-    public List<DeskDTO> getAll() {
-        return deskService.getAllDesks();
+    public ResponseEntity<List<DeskDTO>> getAll() {
+        List<DeskDTO> list = deskService.getAllDesks();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public DeskDTO getById(@PathVariable Long id) {
-        return deskService.getDeskById(id);
+    public ResponseEntity<DeskDTO> getById(@PathVariable Long id) {
+        DeskDTO desk = deskService.getDeskById(id);
+        return new ResponseEntity<>(desk, HttpStatus.OK);
     }
 }
