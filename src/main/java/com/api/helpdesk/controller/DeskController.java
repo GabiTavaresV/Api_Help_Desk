@@ -1,7 +1,6 @@
 package com.api.helpdesk.controller;
 
-import com.api.helpdesk.entity.Desk;
-import com.api.helpdesk.entity.Users;
+import com.api.helpdesk.dto.DeskDTO;
 import com.api.helpdesk.service.AttendantService;
 import com.api.helpdesk.service.DeskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +19,17 @@ public class DeskController {
     private AttendantService attendantService;
 
     @PostMapping
-    public Desk create(@RequestBody Desk desk) {
+    public DeskDTO create(@RequestBody DeskDTO desk) {
        return deskService.register(desk);
     }
 
     @GetMapping("/findAll")
-    public List<Desk> getAll() {
+    public List<DeskDTO> getAll() {
         return deskService.getAllDesks();
     }
 
     @GetMapping("/{id}")
-    public Desk getById(@PathVariable Long id) {
+    public DeskDTO getById(@PathVariable Long id) {
         return deskService.getDeskById(id);
     }
 }
