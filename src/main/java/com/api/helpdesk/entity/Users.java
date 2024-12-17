@@ -31,5 +31,6 @@ public class Users {
     @JsonIgnore
     private List<Ticket> tickets;
 
-
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

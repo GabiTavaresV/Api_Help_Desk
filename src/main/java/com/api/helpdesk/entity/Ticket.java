@@ -47,5 +47,6 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
 
-
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

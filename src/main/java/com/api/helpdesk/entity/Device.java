@@ -17,9 +17,8 @@ public class Device {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
-    @Setter
     private String serialNumber;
 
-
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

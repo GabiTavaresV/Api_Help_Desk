@@ -29,5 +29,6 @@ public class Desk {
     @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>();
 
-
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }
