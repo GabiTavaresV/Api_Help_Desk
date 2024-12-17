@@ -1,6 +1,5 @@
 package com.api.helpdesk.controller;
 
-
 import com.api.helpdesk.dto.TicketDTO;
 import com.api.helpdesk.dto.TicketRequest;
 import com.api.helpdesk.entity.Ticket;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,5 +46,11 @@ public class TicketController {
     public ResponseEntity<Page<Ticket>> getTicketsByCustomerId(@PathVariable Long customerId, @PageableDefault(size = 10, page = 0) Pageable pageable) {
         Page<Ticket> tickets = ticketService.listTicketsByCustomerId(customerId, pageable);
         return ResponseEntity.ok(tickets);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        ticketService.deleteTicketById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

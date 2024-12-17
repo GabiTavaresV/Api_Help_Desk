@@ -1,6 +1,5 @@
 package com.api.helpdesk.controller;
 
-
 import com.api.helpdesk.dto.DeviceDTO;
 import com.api.helpdesk.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +32,11 @@ public class DeviceController {
     public ResponseEntity<DeviceDTO> getById(@PathVariable Long id) {
         DeviceDTO device = deviceService.getDeviceById(id);
         return new ResponseEntity<>(device, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        deviceService.deleteDeviceById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

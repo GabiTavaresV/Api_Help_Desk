@@ -9,11 +9,9 @@ import com.api.helpdesk.service.UserService;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
-
 
     @Autowired
     private UserService userService;
@@ -34,5 +32,11 @@ public class UserController {
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
         UserDTO user = userService.getUserById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

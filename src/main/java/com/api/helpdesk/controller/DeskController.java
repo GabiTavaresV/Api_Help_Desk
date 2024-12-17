@@ -33,4 +33,10 @@ public class DeskController {
         DeskDTO desk = deskService.getDeskById(id);
         return new ResponseEntity<>(desk, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        deskService.deleteDeskById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

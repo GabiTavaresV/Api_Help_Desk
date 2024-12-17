@@ -1,6 +1,5 @@
 package com.api.helpdesk.controller;
 
-
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.service.AttendantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +32,11 @@ public class AttendantController {
     public ResponseEntity<AttendantDTO> getById(@PathVariable Long id) {
         AttendantDTO attendant = attendantService.getAttendantById(id);
         return new ResponseEntity<>(attendant, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        attendantService.deleteAttendantById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
