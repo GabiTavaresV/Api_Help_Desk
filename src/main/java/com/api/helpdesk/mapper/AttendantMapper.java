@@ -15,8 +15,6 @@ public class AttendantMapper {
         return attendantDTO;
     }
 
-
-
     public Attendant toEntity(AttendantDTO attendantDTO) {
         if (attendantDTO == null) {
             return null;

@@ -10,7 +10,6 @@ public class TicketMapper {
     private final DeviceMapper deviceMapper = new DeviceMapper();
     private final AttendantMapper attendantMapper = new AttendantMapper();
 
-
     public TicketDTO toDTO(Ticket ticket) {
         if (ticket == null) {
             return null;
@@ -34,8 +33,6 @@ public class TicketMapper {
         if (ticket.getAttendant() != null) {
             ticketDTO.setAttendant(attendantMapper.toDTO(ticket.getAttendant()));
         }
-
-
         return ticketDTO;
     }
 
