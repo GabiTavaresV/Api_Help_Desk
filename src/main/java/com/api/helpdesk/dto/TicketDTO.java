@@ -3,7 +3,6 @@ package com.api.helpdesk.dto;
 import com.api.helpdesk.utils.TicketStatus;
 import lombok.*;
 
-
 @Builder
 @Data
 @Getter
@@ -20,5 +19,4 @@ public class TicketDTO {
     private DeviceDTO device;
     private DeskDTO desk;
     private AttendantDTO attendant;
-
 }

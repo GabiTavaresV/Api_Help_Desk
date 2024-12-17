@@ -1,6 +1,5 @@
 package com.api.helpdesk.dto;
 
-
 import lombok.*;
 
 @Builder
@@ -13,5 +12,4 @@ import lombok.*;
 public class AttendantDTO {
     private Long id;
     private String name;
-
 }

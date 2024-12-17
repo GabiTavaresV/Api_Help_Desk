@@ -15,5 +15,4 @@ public class TicketRequest {
     private Long deviceId;
     private String reason;
     private Long attendantId;
-
 }

@@ -13,8 +13,4 @@ public class DeviceDTO {
 
     private Long id;
     private String serialNumber;
-
-
-
-
 }
