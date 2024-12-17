@@ -10,6 +10,7 @@ import com.api.helpdesk.repository.DeskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,5 +47,14 @@ public class DeskService {
         Desk desk = deskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundDBException("Balcão não encontrado!"));
         return deskMapper.toDTO(desk);
+    }
+
+    public Void deleteDeskById(Long id) throws NotFoundDBException {
+        Optional<Desk> deskOptional = deskRepository.findById(id);
+        if (!deskOptional.isPresent()) {
+            throw new NotFoundDBException("Equipamento não encontrado!");
+        }
+        deskRepository.softDeleteDeskById(id);
+        return null;
     }
 }

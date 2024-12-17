@@ -77,4 +77,9 @@ public class TicketService {
         return ticketRepository.findByDeskId(deskId, pageable);
     }
 
+    public Void deleteTicketById(Long id) throws NotFoundDBException {
+        ticketRepository.softDeleteTicketById(id);
+        return null;
+    }
+
 }

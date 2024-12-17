@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.api.helpdesk.entity.Users;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,5 +40,14 @@ public class UserService {
         Users users = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundDBException("Usuário não encontrado!"));
         return userMapper.toDTO(users);
+    }
+
+    public Void deleteUserById(Long id) throws NotFoundDBException {
+        Optional<Users> deviceOptional = userRepository.findById(id);
+        if (!deviceOptional.isPresent()) {
+            throw new NotFoundDBException("Usuário não encontrado!");
+        }
+        userRepository.softDeleteUserById(id);
+        return null;
     }
 }

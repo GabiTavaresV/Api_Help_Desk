@@ -7,7 +7,9 @@ import com.api.helpdesk.mapper.DeviceMapper;
 import com.api.helpdesk.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,4 +38,14 @@ public class DeviceService {
                 .orElseThrow(() -> new NotFoundDBException("Aparelho não encontrado!"));
         return deviceMapper.toDTO(device);
     }
+
+    public Void deleteDeviceById(Long id) throws NotFoundDBException {
+        Optional<Device> deviceOptional = deviceRepository.findById(id);
+        if (!deviceOptional.isPresent()) {
+            throw new NotFoundDBException("Equipamento não encontrado!");
+        }
+        deviceRepository.softDeleteByDeviceId(id);
+        return null;
+    }
+
 }

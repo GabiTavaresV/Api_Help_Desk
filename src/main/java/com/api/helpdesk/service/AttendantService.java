@@ -8,6 +8,7 @@ import com.api.helpdesk.repository.AttendantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,4 +39,12 @@ public class AttendantService {
         return attendantMapper.toDTO(attendant);
     }
 
+    public Void deleteAttendantById(Long id) throws NotFoundDBException {
+        Optional<Attendant> deviceOptional = attendantRepository.findById(id);
+        if (!deviceOptional.isPresent()) {
+            throw new NotFoundDBException("Atendente não encontrado!");
+        }
+        attendantRepository.softDeleteAttendantById(id);
+        return null;
+    }
 }
