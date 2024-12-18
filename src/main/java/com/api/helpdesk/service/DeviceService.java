@@ -27,14 +27,14 @@ public class DeviceService {
     }
 
     public List<DeviceDTO> getAllDevices() {
-        List<Device> devices = deviceRepository.findAll();
+        List<Device> devices = deviceRepository.findAllActiveDevices();
         return devices.stream()
                 .map(deviceMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public DeviceDTO getDeviceById(Long id) throws NotFoundDBException {
-        Device device = deviceRepository.findById(id)
+        Device device = deviceRepository.findActiveDeviceById(id)
                 .orElseThrow(() -> new NotFoundDBException("Aparelho não encontrado!"));
         return deviceMapper.toDTO(device);
     }
