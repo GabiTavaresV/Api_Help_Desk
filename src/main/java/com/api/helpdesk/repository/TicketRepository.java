@@ -29,6 +29,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
     long countTicketsByDeskIdAndStatusNot(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
 
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.status ='CONCLUIDO'")
+    long countTicketsByDeskId();
+
     @Modifying
     @Transactional
     @Query("UPDATE Ticket t SET t.status = :status WHERE t.id = :id")
