@@ -5,7 +5,6 @@ import com.api.helpdesk.dto.TicketRequest;
 import com.api.helpdesk.dto.TicketStatusUpdateDTO;
 import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.service.TicketService;
-import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
