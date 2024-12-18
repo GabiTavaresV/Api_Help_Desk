@@ -7,6 +7,8 @@ import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.AttendantMapper;
 import com.api.helpdesk.mapper.DeskMapper;
 import com.api.helpdesk.repository.DeskRepository;
+import com.api.helpdesk.repository.TicketRepository;
+import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -18,6 +20,9 @@ public class DeskService {
 
     @Autowired
     private DeskRepository deskRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @Autowired
     private AttendantService attendantService;
@@ -56,5 +61,16 @@ public class DeskService {
         }
         deskRepository.softDeleteDeskById(id);
         return null;
+    }
+
+    public long getOpenTicketsCountForDesk(Long deskId) {
+        return ticketRepository.countTicketsByDeskIdAndStatusNot(deskId, TicketStatus.CONCLUIDO);
+    }
+
+    public DeskDTO getDeskDetails(Long deskId) throws NotFoundDBException {
+        DeskDTO desk = getDeskById(deskId);
+        Long openTicketsCount = getOpenTicketsCountForDesk(deskId);
+        desk.setOpenTicketsCount(openTicketsCount.intValue());
+        return desk;
     }
 }
