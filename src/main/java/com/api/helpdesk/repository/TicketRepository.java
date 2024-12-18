@@ -1,6 +1,7 @@
 package com.api.helpdesk.repository;
 
 import com.api.helpdesk.entity.Ticket;
+import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT t FROM Ticket t WHERE t.isDeleted = false")
     List<Ticket> findAllActiveTickets();
+
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
+    long countTicketsByDeskIdAndStatusNot(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Ticket t SET t.status = :status WHERE t.id = :id")
+    void updateStatusById(@Param("id") Long id, @Param("status") TicketStatus status);
 }
+

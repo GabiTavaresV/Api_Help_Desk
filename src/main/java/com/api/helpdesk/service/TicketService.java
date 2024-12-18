@@ -82,4 +82,12 @@ public class TicketService {
         return null;
     }
 
+    public void updateStatusById(Long id, TicketStatus status) throws NotFoundDBException {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new NotFoundDBException("Ticket not found"));
+
+        ticket.setStatus(status);
+        ticketRepository.save(ticket);
+    }
+
 }

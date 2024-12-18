@@ -2,8 +2,10 @@ package com.api.helpdesk.controller;
 
 import com.api.helpdesk.dto.TicketDTO;
 import com.api.helpdesk.dto.TicketRequest;
+import com.api.helpdesk.dto.TicketStatusUpdateDTO;
 import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.service.TicketService;
+import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +53,12 @@ public class TicketController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         ticketService.deleteTicketById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Void> updateStatus(@PathVariable Long id, @RequestBody TicketStatusUpdateDTO statusUpdate) {
+        ticketService.updateStatusById(id, statusUpdate.getStatus());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
