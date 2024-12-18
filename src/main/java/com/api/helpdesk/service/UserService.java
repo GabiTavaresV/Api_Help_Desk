@@ -1,5 +1,6 @@
 package com.api.helpdesk.service;
 
+import com.api.helpdesk.controller.handler.EmailAlreadyExistsException;
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.UserMapper;
@@ -24,20 +25,23 @@ public class UserService {
     }
 
     public UserDTO register(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new EmailAlreadyExistsException("Email já cadastrado.");
+        }
+
         Users users = userMapper.toEntity(userDTO);
         Users savedUsers = userRepository.save(users);
         return userMapper.toDTO(savedUsers);
     }
 
     public List<UserDTO> getAllUsers() {
-        List<Users> users = userRepository.findAll();
-        return users.stream()
-                .map(userMapper::toDTO)
-                .collect(Collectors.toList());
+        List<Users> users = userRepository.findAllActiveUsers();
+        return users.stream().map(userMapper::toDTO).collect(Collectors.toList());
+
     }
 
     public UserDTO getUserById(Long id) throws NotFoundDBException {
-        Users users = userRepository.findById(id)
+        Users users = userRepository.findActiveUserById(id)
                 .orElseThrow(() -> new NotFoundDBException("Usuário não encontrado!"));
         return userMapper.toDTO(users);
     }
