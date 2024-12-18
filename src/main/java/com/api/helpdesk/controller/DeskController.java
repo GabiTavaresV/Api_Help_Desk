@@ -28,12 +28,6 @@ public class DeskController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DeskDTO> getById(@PathVariable Long id) {
-        DeskDTO desk = deskService.getDeskById(id);
-        return new ResponseEntity<>(desk, HttpStatus.OK);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         deskService.deleteDeskById(id);

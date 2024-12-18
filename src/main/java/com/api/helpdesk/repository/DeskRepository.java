@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DeskRepository extends JpaRepository<Desk, Long> {
@@ -21,6 +22,9 @@ public interface DeskRepository extends JpaRepository<Desk, Long> {
     @Query("SELECT dk FROM Desk dk WHERE dk.isDeleted = false")
     List<Desk> findAllActiveDesks();
 
+    @Query("SELECT dk FROM Desk dk WHERE dk.id = :id AND dk.isDeleted = false")
+    Optional<Desk> findActiveDeskById(@Param("id") Long id);
+
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
-    long countTicketsByDeskIdAndStatusNot(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
+    long countOpenTicketsByDeskId(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
 }

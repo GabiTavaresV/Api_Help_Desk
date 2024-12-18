@@ -11,6 +11,8 @@ import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,14 +44,21 @@ public class DeskService {
     }
 
     public List<DeskDTO> getAllDesks() {
-        List<Desk> desks = deskRepository.findAll();
-        return desks.stream()
-                .map(deskMapper::toDTO)
-                .collect(Collectors.toList());
+        List<Desk> desks = deskRepository.findAllActiveDesks();
+        List<DeskDTO> deskDTOs = new ArrayList<>();
+
+        for (Desk desk : desks) {
+            long openTicketsCount = ticketRepository.countTicketsByDeskIdAndStatusNot(desk.getId(), TicketStatus.CONCLUIDO);
+            DeskDTO deskDTO = deskMapper.toDTO(desk);
+            deskDTO.setOpenTicketsCount((int) openTicketsCount);
+            deskDTOs.add(deskDTO);
+        }
+
+        return deskDTOs;
     }
 
     public DeskDTO getDeskById(Long id) throws NotFoundDBException {
-        Desk desk = deskRepository.findById(id)
+        Desk desk = deskRepository.findActiveDeskById(id)
                 .orElseThrow(() -> new NotFoundDBException("Balcão não encontrado!"));
         return deskMapper.toDTO(desk);
     }
@@ -65,6 +74,10 @@ public class DeskService {
 
     public long getOpenTicketsCountForDesk(Long deskId) {
         return ticketRepository.countTicketsByDeskIdAndStatusNot(deskId, TicketStatus.CONCLUIDO);
+    }
+
+    public long getOpenTicketsCountForAllDesks() {
+        return ticketRepository.countTicketsByDeskId();
     }
 
     public DeskDTO getDeskDetails(Long deskId) throws NotFoundDBException {
