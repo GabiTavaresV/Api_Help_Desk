@@ -12,4 +12,5 @@ import lombok.*;
 public class DeskDTO {
     private Long id;
     private AttendantDTO attendant;
+    private int openTicketsCount;
 }
