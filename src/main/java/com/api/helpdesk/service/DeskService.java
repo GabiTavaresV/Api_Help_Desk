@@ -33,6 +33,14 @@ public class DeskService {
     private final AttendantMapper attendantMapper = new AttendantMapper();
 
     public DeskDTO register(DeskDTO deskDTO) {
+        Long deskId = deskDTO.getId();
+
+        long openTicketsCount = deskRepository.countOpenTicketsByDeskId(deskId, TicketStatus.CONCLUIDO);
+
+        if (openTicketsCount >= 5) {
+            throw new IllegalStateException("Não é possível criar mais chamados. O número máximo de chamados em aberto foi atingido.");
+        }
+
         Desk desk = deskMapper.toEntity(deskDTO);
 
         AttendantDTO attendant = attendantService.getAttendantById(deskDTO.getAttendant().getId());
@@ -86,4 +94,6 @@ public class DeskService {
         desk.setOpenTicketsCount(openTicketsCount.intValue());
         return desk;
     }
+
+
 }
