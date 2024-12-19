@@ -50,5 +50,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.device.serialNumber = :serialNumber AND t.status = :status")
     long countActiveTicketsBySerialNumber(@Param("serialNumber") String serialNumber, @Param("status") TicketStatus status);
 
+    List<Ticket> findAllByStatus(TicketStatus status);
 }
 
