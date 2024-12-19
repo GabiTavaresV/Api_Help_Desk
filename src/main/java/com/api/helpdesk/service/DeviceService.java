@@ -2,6 +2,7 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.dto.DeviceDTO;
 import com.api.helpdesk.entity.Device;
+import com.api.helpdesk.exception.ConflictException;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.DeviceMapper;
 import com.api.helpdesk.repository.DeviceRepository;
@@ -21,6 +22,10 @@ public class DeviceService {
     private final DeviceMapper deviceMapper = new DeviceMapper();
 
     public DeviceDTO createDevice(DeviceDTO deviceDTO) {
+        String serialNumber = deviceDTO.getSerialNumber();
+        if (deviceRepository.existsBySerialNumber(serialNumber)) {
+            throw new ConflictException("Conflito: Já existe um dispositivo cadastrado com o mesmo serial number: " + serialNumber);
+        }
         Device device = deviceMapper.toEntity(deviceDTO);
         Device savedDevice = deviceRepository.save(device);
         return deviceMapper.toDTO(savedDevice);
