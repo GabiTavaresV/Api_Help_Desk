@@ -1,5 +1,6 @@
-package com.api.helpdesk.exception;
+package com.api.helpdesk.controller.handler;
 
+import com.api.helpdesk.exception.NotFoundDBException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
