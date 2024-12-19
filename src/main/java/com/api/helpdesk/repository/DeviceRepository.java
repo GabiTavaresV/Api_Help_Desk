@@ -24,4 +24,7 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
 
     @Query("SELECT d FROM Device d WHERE d.id = :id AND d.isDeleted = false")
     Optional<Device> findActiveDeviceById(@Param("id") Long id);
+
+    @Query("SELECT COUNT(d) > 0 FROM Device d WHERE d.serialNumber = :serialNumber")
+    boolean existsBySerialNumber(@Param("serialNumber") String serialNumber);
 }
