@@ -26,7 +26,7 @@ public class UserService {
 
     public UserDTO register(UserDTO userDTO) {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new EmailAlreadyExistsException("Email já cadastrado.");
+            throw new EmailAlreadyExistsException("Usuário já cadastrado.");
         }
 
         Users users = userMapper.toEntity(userDTO);
