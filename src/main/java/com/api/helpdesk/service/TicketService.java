@@ -2,6 +2,7 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.dto.*;
 import com.api.helpdesk.entity.Ticket;
+import com.api.helpdesk.exception.ConflictException;
 import com.api.helpdesk.mapper.*;
 import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.utils.TicketStatus;
@@ -39,11 +40,21 @@ public class TicketService {
     private final AttendantMapper attendantMapper = new AttendantMapper();
 
     public TicketDTO createTicket(Long customerId, Long deskId, Long deviceId, String reason, Long attendantId) throws NotFoundDBException {
-
         UserDTO user = userService.getUserById(customerId);
         DeskDTO desk = deskService.getDeskById(deskId);
         DeviceDTO device = deviceService.getDeviceById(deviceId);
         AttendantDTO attendant = attendantService.getAttendantById(attendantId);
+
+        String serialNumber = device.getSerialNumber();
+        long existingTicketsCount = ticketRepository.countOpenTicketsByCustomerAndSerialNumber(customerId, serialNumber, TicketStatus.CONCLUIDO);
+        if (existingTicketsCount > 0) {
+            throw new ConflictException("Conflito: O usuário já possui um chamado aberto para o mesmo serial number.");
+        }
+
+        long openTicketsCount = ticketRepository.countOpenTicketsByDeskId(deskId, TicketStatus.CONCLUIDO);
+        if (openTicketsCount >= 5) {
+            throw new IllegalStateException("Não é possível criar mais de 5 chamados abertos para este balcão.");
+        }
 
         Ticket ticket = new Ticket();
         ticket.setCustomer(userMapper.toEntity(user));
@@ -51,7 +62,6 @@ public class TicketService {
         ticket.setDevice(deviceMapper.toEntity(device));
         ticket.setReason(reason);
         ticket.setAttendant(attendantMapper.toEntity(attendant));
-
         ticket.setCreatedDate(LocalDateTime.now());
         ticket.setStatus(TicketStatus.ABERTO);
 
