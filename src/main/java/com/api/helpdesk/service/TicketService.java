@@ -3,6 +3,7 @@ package com.api.helpdesk.service;
 import com.api.helpdesk.dto.*;
 import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.exception.ConflictException;
+import com.api.helpdesk.exception.ForbiddenException;
 import com.api.helpdesk.mapper.*;
 import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.utils.TicketStatus;
@@ -46,9 +47,17 @@ public class TicketService {
         AttendantDTO attendant = attendantService.getAttendantById(attendantId);
 
         String serialNumber = device.getSerialNumber();
-        long existingTicketsCount = ticketRepository.countOpenTicketsByCustomerAndSerialNumber(customerId, serialNumber, TicketStatus.CONCLUIDO);
-        if (existingTicketsCount > 0) {
-            throw new ConflictException("Conflito: O usuário já possui um chamado aberto para o mesmo serial number.");
+
+        long activeTicketsCount = ticketRepository.countActiveTicketsBySerialNumber(serialNumber, TicketStatus.ABERTO);
+
+        if (activeTicketsCount > 0) {
+            throw new ForbiddenException("Outro chamado já está em atendimento para o serial number: " + serialNumber);
+        }
+
+        long userActiveTicketsCount = ticketRepository.countActiveTicketsByCustomerAndSerialNumber(customerId, serialNumber, TicketStatus.ABERTO);
+
+        if (userActiveTicketsCount > 0) {
+            throw new ConflictException("O usuário já possui um chamado aberto para o mesmo serial number: " + serialNumber );
         }
 
         long openTicketsCount = ticketRepository.countOpenTicketsByDeskId(deskId, TicketStatus.CONCLUIDO);
@@ -97,6 +106,11 @@ public class TicketService {
                 .orElseThrow(() -> new NotFoundDBException("Ticket not found"));
 
         ticket.setStatus(status);
+
+        if (status == TicketStatus.CONCLUIDO) {
+            ticket.setResolvedDate(LocalDateTime.now());
+        }
+
         ticketRepository.save(ticket);
     }
 
