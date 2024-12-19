@@ -23,8 +23,9 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping
-    public TicketDTO create(@RequestBody TicketRequest ticketRequest) {
-        return ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason(), ticketRequest.getAttendantId());
+    public ResponseEntity<TicketDTO>  create(@RequestBody TicketRequest ticketRequest) {
+        TicketDTO createTicket = ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason(), ticketRequest.getAttendantId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createTicket);
     }
 
     @GetMapping("/findAll")
