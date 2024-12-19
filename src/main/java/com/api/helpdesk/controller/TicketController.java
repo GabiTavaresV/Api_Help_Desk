@@ -5,6 +5,7 @@ import com.api.helpdesk.dto.TicketRequest;
 import com.api.helpdesk.dto.TicketStatusUpdateDTO;
 import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.service.TicketService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping
-    public ResponseEntity<TicketDTO>  create(@RequestBody TicketRequest ticketRequest) {
+    public ResponseEntity<TicketDTO>  create(@Valid @RequestBody TicketRequest ticketRequest) {
         TicketDTO createTicket = ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason(), ticketRequest.getAttendantId());
         return ResponseEntity.status(HttpStatus.CREATED).body(createTicket);
     }

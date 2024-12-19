@@ -1,6 +1,7 @@
 package com.api.helpdesk.controller;
 
 import com.api.helpdesk.dto.UserDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO users) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO users) {
         UserDTO savedUser = userService.register(users);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
