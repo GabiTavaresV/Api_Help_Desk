@@ -23,20 +23,20 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping
-    public ResponseEntity<TicketDTO>  create( @RequestBody TicketRequest ticketRequest) {
-        TicketDTO createTicket = ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason(), ticketRequest.getAttendantId());
+    public ResponseEntity<TicketDTO>  create( @RequestBody TicketRequest TicketRequest) {
+        TicketDTO createTicket = ticketService.createTicket(TicketRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createTicket);
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<TicketDTO>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
-        List<TicketDTO> list = ticketService.listAllTickets(pageable);
+    public ResponseEntity<List<Ticket>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        List<Ticket> list = ticketService.listAllTickets(pageable);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TicketDTO> getById(@PathVariable Long id) {
-        TicketDTO ticket = ticketService.getTicketDetails(id);
+    public ResponseEntity<Ticket> getById(@PathVariable Long id) {
+        Ticket ticket = ticketService.getTicketDetails(id);
         return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
