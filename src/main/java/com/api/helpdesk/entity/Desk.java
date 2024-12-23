@@ -22,7 +22,7 @@ public class Desk {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "attendant_id")
+    @JoinColumn(name = "attendant_id", referencedColumnName = "id")
     private Attendant attendant;
 
     @OneToMany(mappedBy = "desk")
