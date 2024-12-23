@@ -8,7 +8,6 @@ public class TicketMapper {
     private final UserMapper userMapper = new UserMapper();
     private final DeskMapper deskMapper = new DeskMapper();
     private final DeviceMapper deviceMapper = new DeviceMapper();
-    private final AttendantMapper attendantMapper = new AttendantMapper();
 
     public TicketDTO toDTO(Ticket ticket) {
         if (ticket == null) {
@@ -30,9 +29,6 @@ public class TicketMapper {
             ticketDTO.setDesk(deskMapper.toDTO(ticket.getDesk()));
         }
 
-        if (ticket.getAttendant() != null) {
-            ticketDTO.setAttendant(attendantMapper.toDTO(ticket.getAttendant()));
-        }
         return ticketDTO;
     }
 
