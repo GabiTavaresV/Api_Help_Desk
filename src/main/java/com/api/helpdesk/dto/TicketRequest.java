@@ -11,8 +11,6 @@ import lombok.*;
 
 public class TicketRequest {
     private Long customerId;
-    private Long deskId;
     private Long deviceId;
     private String reason;
-    private Long attendantId;
 }
