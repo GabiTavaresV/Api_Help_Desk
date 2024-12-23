@@ -18,5 +18,4 @@ public class TicketDTO {
     private UserDTO customer;
     private DeviceDTO device;
     private DeskDTO desk;
-    private AttendantDTO attendant;
 }

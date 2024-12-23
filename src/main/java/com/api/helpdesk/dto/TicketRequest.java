@@ -14,5 +14,4 @@ public class TicketRequest {
     private Long deskId;
     private Long deviceId;
     private String reason;
-    private Long attendantId;
 }

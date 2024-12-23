@@ -35,10 +35,6 @@ public class Ticket {
     @JoinColumn(name = "device_id")
     private Device device;
 
-    @ManyToOne
-    @JoinColumn(name = "attendant_id")
-    private Attendant attendant;
-
     private LocalDateTime createdDate;
 
     @Column(name = "resolved_date")

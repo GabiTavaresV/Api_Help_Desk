@@ -30,9 +30,6 @@ public class TicketMapper {
             ticketDTO.setDesk(deskMapper.toDTO(ticket.getDesk()));
         }
 
-        if (ticket.getAttendant() != null) {
-            ticketDTO.setAttendant(attendantMapper.toDTO(ticket.getAttendant()));
-        }
         return ticketDTO;
     }
 
