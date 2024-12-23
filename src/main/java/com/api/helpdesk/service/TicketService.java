@@ -31,46 +31,52 @@ public class TicketService {
     @Autowired
     private DeviceService deviceService;
 
-    @Autowired
-    private AttendantService attendantService;
-
     private final TicketMapper ticketMapper = new TicketMapper();
     private final DeskMapper deskMapper = new DeskMapper();
     private final UserMapper userMapper = new UserMapper();
     private final DeviceMapper deviceMapper = new DeviceMapper();
-    private final AttendantMapper attendantMapper = new AttendantMapper();
 
-    public TicketDTO createTicket(Long customerId, Long deskId, Long deviceId, String reason, Long attendantId) throws NotFoundDBException {
+    public TicketDTO createTicket(TicketRequest ticketRequest) throws NotFoundDBException {
+        Long customerId = ticketRequest.getCustomerId();
+        Long deviceId = ticketRequest.getDeviceId();
+        String reason = ticketRequest.getReason();
+
         UserDTO user = userService.getUserById(customerId);
-        DeskDTO desk = deskService.getDeskById(deskId);
         DeviceDTO device = deviceService.getDeviceById(deviceId);
-        AttendantDTO attendant = attendantService.getAttendantById(attendantId);
 
         String serialNumber = device.getSerialNumber();
-
         long activeTicketsCount = ticketRepository.countActiveTicketsBySerialNumber(serialNumber, TicketStatus.ABERTO);
-
         if (activeTicketsCount > 0) {
             throw new ForbiddenException("Outro chamado já está em atendimento para o serial number: " + serialNumber);
         }
 
         long userActiveTicketsCount = ticketRepository.countActiveTicketsByCustomerAndSerialNumber(customerId, serialNumber, TicketStatus.ABERTO);
-
         if (userActiveTicketsCount > 0) {
-            throw new ConflictException("O usuário já possui um chamado aberto para o mesmo serial number: " + serialNumber );
+            throw new ConflictException("O usuário já possui um chamado aberto para o mesmo serial number: " + serialNumber);
         }
 
-        long openTicketsCount = ticketRepository.countOpenTicketsByDeskId(deskId, TicketStatus.CONCLUIDO);
-        if (openTicketsCount >= 5) {
-            throw new IllegalStateException("Não é possível criar mais de 5 chamados abertos para este balcão.");
+        List<DeskDTO> availableDesks = deskService.findAvailableDesks();
+
+        DeskDTO assignedDesk = null;
+
+        for (DeskDTO desk : availableDesks) {
+            long openTicketsCount = ticketRepository.countOpenTicketsByDeskId(desk.getId(), TicketStatus.ABERTO);
+
+            if (openTicketsCount < 5) {
+                assignedDesk = desk;
+                break;
+            }
+        }
+
+        if (assignedDesk == null) {
+            throw new IllegalStateException("Não há balcões disponíveis para criar um novo ticket.");
         }
 
         Ticket ticket = new Ticket();
         ticket.setCustomer(userMapper.toEntity(user));
-        ticket.setDesk(deskMapper.toEntity(desk));
+        ticket.setDesk(deskMapper.toEntity(assignedDesk));
         ticket.setDevice(deviceMapper.toEntity(device));
         ticket.setReason(reason);
-        ticket.setAttendant(attendantMapper.toEntity(attendant));
         ticket.setCreatedDate(LocalDateTime.now());
         ticket.setStatus(TicketStatus.ABERTO);
 
