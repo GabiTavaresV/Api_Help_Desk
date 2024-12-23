@@ -27,4 +27,7 @@ public interface DeskRepository extends JpaRepository<Desk, Long> {
 
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
     long countOpenTicketsByDeskId(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
+
+    @Query("SELECT d FROM Desk d WHERE d.attendant IS NOT NULL")
+    List<Desk> findAllWithAttendant();
 }
