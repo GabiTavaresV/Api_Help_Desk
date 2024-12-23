@@ -29,13 +29,15 @@ public class TicketController {
     }
 
     @GetMapping("/findAll")
-    public List<Ticket> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
-        return ticketService.listAllTickets(pageable);
+    public ResponseEntity<List<TicketDTO>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        List<TicketDTO> list = ticketService.listAllTickets(pageable);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Ticket getById(@PathVariable Long id) {
-        return ticketService.getTicketDetails(id);
+    public ResponseEntity<TicketDTO> getById(@PathVariable Long id) {
+        TicketDTO ticket = ticketService.getTicketDetails(id);
+        return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
     @GetMapping("/desk/{deskId}")
