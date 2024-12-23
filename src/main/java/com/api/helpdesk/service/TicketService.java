@@ -40,7 +40,13 @@ public class TicketService {
     private final DeviceMapper deviceMapper = new DeviceMapper();
     private final AttendantMapper attendantMapper = new AttendantMapper();
 
-    public TicketDTO createTicket(Long customerId, Long deskId, Long deviceId, String reason) throws NotFoundDBException {
+    public TicketDTO createTicket(TicketRequest ticketRequest) throws NotFoundDBException {
+        Long customerId = ticketRequest.getCustomerId();
+        Long deskId = ticketRequest.getDeskId();
+        Long deviceId = ticketRequest.getDeviceId();
+        String reason = ticketRequest.getReason();
+
+
         UserDTO user = userService.getUserById(customerId);
         DeskDTO desk = deskService.getDeskById(deskId);
         DeviceDTO device = deviceService.getDeviceById(deviceId);
@@ -52,7 +58,6 @@ public class TicketService {
         if (desk.getAttendant() == null) {
             throw new NotFoundDBException("Desk does not have an attendant associated.");
         }
-
 
         if (activeTicketsCount > 0) {
             throw new ForbiddenException("Outro chamado já está em atendimento para o serial number: " + serialNumber);
