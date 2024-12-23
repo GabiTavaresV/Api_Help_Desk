@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class DeskService {
@@ -84,15 +83,29 @@ public class DeskService {
         return ticketRepository.countTicketsByDeskIdAndStatusNot(deskId, TicketStatus.CONCLUIDO);
     }
 
-    public long getOpenTicketsCountForAllDesks() {
-        return ticketRepository.countTicketsByDeskId();
-    }
-
     public DeskDTO getDeskDetails(Long deskId) throws NotFoundDBException {
         DeskDTO desk = getDeskById(deskId);
         Long openTicketsCount = getOpenTicketsCountForDesk(deskId);
         desk.setOpenTicketsCount(openTicketsCount.intValue());
         return desk;
+    }
+
+    public List<DeskDTO> findAvailableDesks() {
+        List<Desk> desksWithAttendant = deskRepository.findAllWithAttendant();
+        List<DeskDTO> availableDesks = new ArrayList<>();
+
+        for (Desk desk : desksWithAttendant) {
+            long openTicketsCount = ticketRepository.countOpenTicketsByDeskId(desk.getId(), TicketStatus.ABERTO);
+
+            System.out.println("Desk ID: " + desk.getId() + ", Open Tickets: " + openTicketsCount);
+
+            if (openTicketsCount < 5) {
+                availableDesks.add(deskMapper.toDTO(desk));
+                System.out.println("Desk ID: " + desk.getId() + " is added to available desks.");
+            }
+        }
+
+        return availableDesks;
     }
 
 
