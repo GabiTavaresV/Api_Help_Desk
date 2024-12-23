@@ -2,10 +2,12 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.dto.*;
 import com.api.helpdesk.entity.Ticket;
+import com.api.helpdesk.entity.WaitingLine;
 import com.api.helpdesk.exception.ConflictException;
 import com.api.helpdesk.exception.ForbiddenException;
 import com.api.helpdesk.mapper.*;
 import com.api.helpdesk.repository.TicketRepository;
+import com.api.helpdesk.repository.WaitingLineRepository;
 import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,9 @@ public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
+
+    @Autowired
+    private WaitingLineRepository waitingLineRepository;
 
     @Autowired
     private DeskService deskService;
@@ -69,7 +74,14 @@ public class TicketService {
         }
 
         if (assignedDesk == null) {
-            throw new IllegalStateException("Não há balcões disponíveis para criar um novo ticket.");
+            WaitingLine waitingTicket = new WaitingLine();
+            waitingTicket.setCustomerId(customerId);
+            waitingTicket.setDeviceId(deviceId);
+            waitingTicket.setReason(reason);
+            waitingTicket.setRequestTime(LocalDateTime.now());
+
+            waitingLineRepository.save(waitingTicket);
+            return null;
         }
 
         Ticket ticket = new Ticket();
