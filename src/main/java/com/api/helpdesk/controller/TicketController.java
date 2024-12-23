@@ -5,7 +5,6 @@ import com.api.helpdesk.dto.TicketRequest;
 import com.api.helpdesk.dto.TicketStatusUpdateDTO;
 import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.service.TicketService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +23,21 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping
-    public ResponseEntity<TicketDTO>  create(@Valid @RequestBody TicketRequest ticketRequest) {
-        TicketDTO createTicket = ticketService.createTicket(ticketRequest.getCustomerId(), ticketRequest.getDeskId(), ticketRequest.getDeviceId(), ticketRequest.getReason(), ticketRequest.getAttendantId());
+    public ResponseEntity<TicketDTO>  create( @RequestBody TicketRequest TicketRequest) {
+        TicketDTO createTicket = ticketService.createTicket(TicketRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createTicket);
     }
 
     @GetMapping("/findAll")
-    public List<Ticket> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
-        return ticketService.listAllTickets(pageable);
+    public ResponseEntity<List<Ticket>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        List<Ticket> list = ticketService.listAllTickets(pageable);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Ticket getById(@PathVariable Long id) {
-        return ticketService.getTicketDetails(id);
+    public ResponseEntity<Ticket> getById(@PathVariable Long id) {
+        Ticket ticket = ticketService.getTicketDetails(id);
+        return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
     @GetMapping("/desk/{deskId}")
