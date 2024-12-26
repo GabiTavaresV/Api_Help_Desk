@@ -27,18 +27,17 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
     long countTicketsByDeskIdAndStatusNot(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
 
-    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.status ='CONCLUIDO'")
-    long countTicketsByDeskId();
-
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status = :status")
     long countOpenTicketsByDeskId(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
 
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.customer.id = :customerId AND t.device.serialNumber = :serialNumber AND t.status = :status")
     long countActiveTicketsByCustomerAndSerialNumber(@Param("customerId") Long customerId, @Param("serialNumber") String serialNumber, @Param("status") TicketStatus status);
 
-    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.device.serialNumber = :serialNumber AND t.status = :status")
-    long countActiveTicketsBySerialNumber(@Param("serialNumber") String serialNumber, @Param("status") TicketStatus status);
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
+    long countTicketsByDeskIdAndNotStatus(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
 
-    List<Ticket> findAllByStatus(TicketStatus status);
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.device.serialNumber = :serialNumber AND t.status <> :status")
+    long countActiveTicketsBySerialNumberNotConcluded(@Param("serialNumber") String serialNumber, @Param("status") TicketStatus status);
+
 }
 
