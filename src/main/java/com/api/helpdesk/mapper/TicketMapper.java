@@ -3,6 +3,8 @@ package com.api.helpdesk.mapper;
 import com.api.helpdesk.dto.TicketDTO;
 import com.api.helpdesk.entity.Ticket;
 
+import java.time.LocalDateTime;
+
 public class TicketMapper {
 
     private final UserMapper userMapper = new UserMapper();
@@ -40,6 +42,7 @@ public class TicketMapper {
         ticket.setId(ticketDTO.getId());
         ticket.setReason(ticketDTO.getReason());
         ticket.setStatus(ticketDTO.getStatus());
+        ticket.setUpdatedAt(LocalDateTime.now());
 
         if (ticketDTO.getCustomer() != null) {
             ticket.setCustomer(userMapper.toEntity(ticketDTO.getCustomer()));

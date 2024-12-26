@@ -3,6 +3,8 @@ package com.api.helpdesk.dto;
 import com.api.helpdesk.utils.TicketStatus;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 @Getter
@@ -18,4 +20,6 @@ public class TicketDTO {
     private UserDTO customer;
     private DeviceDTO device;
     private DeskDTO desk;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

@@ -47,4 +47,7 @@ public class Ticket {
 
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }
