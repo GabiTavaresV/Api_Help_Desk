@@ -36,12 +36,10 @@ public class TicketService {
     @Autowired
     private DeviceService deviceService;
 
-    private final TicketMapper ticketMapper = new TicketMapper();
-    private final DeskMapper deskMapper = new DeskMapper();
-    private final UserMapper userMapper = new UserMapper();
-    private final DeviceMapper deviceMapper = new DeviceMapper();
+    private  TicketMapper ticketMapper = new TicketMapper();
 
     public TicketDTO createTicket(TicketRequest ticketRequest) throws NotFoundDBException {
+        validateTicketRequest(ticketRequest);
         Long customerId = ticketRequest.getCustomerId();
         Long deviceId = ticketRequest.getDeviceId();
         String reason = ticketRequest.getReason();
@@ -49,51 +47,70 @@ public class TicketService {
         UserDTO user = userService.getUserById(customerId);
         DeviceDTO device = deviceService.getDeviceById(deviceId);
 
-        String serialNumber = device.getSerialNumber();
-        long activeTicketsCount = ticketRepository.countActiveTicketsBySerialNumber(serialNumber, TicketStatus.ABERTO);
-        if (activeTicketsCount > 0) {
-            throw new ForbiddenException("Outro chamado já está em atendimento para o serial number: " + serialNumber);
-        }
+        ensureNoActiveTicketForSerialNumber(device.getSerialNumber(), customerId);
 
-        long userActiveTicketsCount = ticketRepository.countActiveTicketsByCustomerAndSerialNumber(customerId, serialNumber, TicketStatus.ABERTO);
-        if (userActiveTicketsCount > 0) {
-            throw new ConflictException("O usuário já possui um chamado aberto para o mesmo serial number: " + serialNumber);
-        }
-
-        List<DeskDTO> availableDesks = deskService.findAvailableDesks();
-
-        DeskDTO assignedDesk = null;
-
-        for (DeskDTO desk : availableDesks) {
-            long openTicketsCount = ticketRepository.countOpenTicketsByDeskId(desk.getId(), TicketStatus.ABERTO);
-
-            if (openTicketsCount < 5) {
-                assignedDesk = desk;
-                break;
-            }
-        }
-
+        DeskDTO assignedDesk = findAvailableDesk();
         if (assignedDesk == null) {
-            WaitingLine waitingTicket = new WaitingLine();
-            waitingTicket.setCustomerId(customerId);
-            waitingTicket.setDeviceId(deviceId);
-            waitingTicket.setReason(reason);
-            waitingTicket.setRequestTime(LocalDateTime.now());
-
-            waitingLineRepository.save(waitingTicket);
+            saveWaitingLine(customerId, deviceId, reason);
             return null;
         }
 
-        Ticket ticket = new Ticket();
-        ticket.setCustomer(userMapper.toEntity(user));
-        ticket.setDesk(deskMapper.toEntity(assignedDesk));
-        ticket.setDevice(deviceMapper.toEntity(device));
-        ticket.setReason(reason);
-        ticket.setCreatedDate(LocalDateTime.now());
-        ticket.setStatus(TicketStatus.ABERTO);
+        TicketDTO ticketDTO = createNewTicket(user, device, assignedDesk, reason);
+
+        Ticket ticket = ticketMapper.toEntity(ticketDTO);
 
         Ticket savedTicket = ticketRepository.save(ticket);
+
         return ticketMapper.toDTO(savedTicket);
+    }
+
+    private void validateTicketRequest(TicketRequest ticketRequest) {
+        if (ticketRequest.getCustomerId() == null || ticketRequest.getDeviceId() == null || ticketRequest.getReason() == null) {
+            throw new IllegalArgumentException("Id do Cliente, Id do Aparelho e motivo do chamado são obrigatórios!.");
+        }
+    }
+
+    private void ensureNoActiveTicketForSerialNumber(String serialNumber, Long customerId) {
+        if (ticketRepository.countActiveTicketsBySerialNumber(serialNumber, TicketStatus.ABERTO) > 0) {
+            throw new ForbiddenException("Outro chamado já está em atendimento para o serial number: " + serialNumber);
+        }
+
+        if (ticketRepository.countActiveTicketsByCustomerAndSerialNumber(customerId, serialNumber, TicketStatus.ABERTO) > 0) {
+            throw new ConflictException("O usuário já possui um chamado aberto para o mesmo serial number: " + serialNumber);
+        }
+    }
+
+    private DeskDTO findAvailableDesk() {
+        List<DeskDTO> availableDesks = deskService.findAvailableDesks();
+        for (DeskDTO desk : availableDesks) {
+            if (ticketRepository.countOpenTicketsByDeskId(desk.getId(), TicketStatus.ABERTO) < 5) {
+                return desk;
+            }
+        }
+        return null;
+    }
+
+    private void saveWaitingLine(Long customerId, Long deviceId, String reason) {
+        WaitingLine waitingTicket = WaitingLine.builder()
+                .customerId(customerId)
+                .deviceId(deviceId)
+                .reason(reason)
+                .requestTime(LocalDateTime.now())
+                .build();
+
+        waitingLineRepository.save(waitingTicket);
+    }
+
+    private TicketDTO createNewTicket(UserDTO user, DeviceDTO device, DeskDTO desk, String reason) {
+        return TicketDTO.builder()
+                .customer(user)
+                .device(device)
+                .desk(desk)
+                .reason(reason)
+                .createdAt(LocalDateTime.now())
+                .status(TicketStatus.ABERTO)
+                .updatedAt(LocalDateTime.now())
+                .build();
     }
 
     public List<Ticket> listAllTickets(Pageable pageable) {
