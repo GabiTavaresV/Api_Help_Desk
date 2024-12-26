@@ -43,6 +43,7 @@ public class JobTicket {
             else if (ticket.getStatus() == TicketStatus.EM_ATENDIMENTO && isOlderThan(ticket.getUpdatedAt(), 30)) {
                 ticket.setStatus(TicketStatus.CONCLUIDO);
                 ticket.setUpdatedAt(now);
+                ticket.setResolvedDate(now);
                 ticketRepository.save(ticket);
             }
         }
