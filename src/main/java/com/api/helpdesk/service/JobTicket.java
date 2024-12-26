@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.api.helpdesk.utils.TicketStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,25 +20,35 @@ public class JobTicket {
         this.ticketRepository = ticketRepository;
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRate = 10000)
     @Transactional
     public void processTickets() {
-        List<Ticket> openTickets = ticketRepository.findAllByStatus(TicketStatus.ABERTO);
-        for (Ticket ticket : openTickets) {
-            ticket.setStatus(TicketStatus.EM_ESPERA);
-            ticketRepository.save(ticket);
-        }
+        List<Ticket> tickets = ticketRepository.findAll();
 
-        List<Ticket> waitingTickets = ticketRepository.findAllByStatus(TicketStatus.EM_ESPERA);
-        for (Ticket ticket : waitingTickets) {
-            ticket.setStatus(TicketStatus.EM_ATENDIMENTO);
-            ticketRepository.save(ticket);
-        }
+        for (Ticket ticket : tickets) {
+            LocalDateTime now = LocalDateTime.now();
 
-        List<Ticket> inServiceTickets = ticketRepository.findAllByStatus(TicketStatus.EM_ATENDIMENTO);
-        for (Ticket ticket : inServiceTickets) {
-            ticket.setStatus(TicketStatus.CONCLUIDO);
-            ticketRepository.save(ticket);
+            if (ticket.getStatus() == TicketStatus.ABERTO && isOlderThan(ticket.getUpdatedAt(), 30)) {
+                ticket.setStatus(TicketStatus.EM_ESPERA);
+                ticket.setUpdatedAt(now);
+                ticketRepository.save(ticket);
+            }
+
+            else if (ticket.getStatus() == TicketStatus.EM_ESPERA && isOlderThan(ticket.getUpdatedAt(), 30)) {
+                ticket.setStatus(TicketStatus.EM_ATENDIMENTO);
+                ticket.setUpdatedAt(now);
+                ticketRepository.save(ticket);
+            }
+
+            else if (ticket.getStatus() == TicketStatus.EM_ATENDIMENTO && isOlderThan(ticket.getUpdatedAt(), 30)) {
+                ticket.setStatus(TicketStatus.CONCLUIDO);
+                ticket.setUpdatedAt(now);
+                ticketRepository.save(ticket);
+            }
         }
+    }
+
+    private boolean isOlderThan(LocalDateTime dateTime, int seconds) {
+        return dateTime.plusSeconds(seconds).isBefore(LocalDateTime.now());
     }
 }
