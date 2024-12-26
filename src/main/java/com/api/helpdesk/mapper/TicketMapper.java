@@ -43,6 +43,7 @@ public class TicketMapper {
         ticket.setReason(ticketDTO.getReason());
         ticket.setStatus(ticketDTO.getStatus());
         ticket.setUpdatedAt(LocalDateTime.now());
+        ticket.setCreatedAt(LocalDateTime.now());
 
         if (ticketDTO.getCustomer() != null) {
             ticket.setCustomer(userMapper.toEntity(ticketDTO.getCustomer()));
