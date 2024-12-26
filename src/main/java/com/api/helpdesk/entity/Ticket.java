@@ -35,7 +35,8 @@ public class Ticket {
     @JoinColumn(name = "device_id")
     private Device device;
 
-    private LocalDateTime createdDate;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "resolved_date")
     private LocalDateTime resolvedDate;
