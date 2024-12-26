@@ -17,34 +17,30 @@ public class WaitingLineService {
     private WaitingLineRepository waitingTicketRepository;
 
     @Autowired
-    private TicketService ticketService; // Para criar novos tickets
+    private TicketService ticketService;
 
     @Autowired
     private DeskService deskService;
 
-    @Scheduled(fixedRate = 180000) // Executa a cada 3 minutos
+    @Scheduled(fixedRate = 180000)
     public void processWaitingTickets() {
-        List<WaitingLine> waitingTickets = waitingTicketRepository.findAll(); // Obter todos os tickets em espera
+        List<WaitingLine> waitingTickets = waitingTicketRepository.findAll();
 
         for (WaitingLine waitingTicket : waitingTickets) {
-            // Aqui você chamaria a lógica para criar um novo ticket
-            // Primeiro, verifique os balcões disponíveis
+
             List<DeskDTO> availableDesks = deskService.findAvailableDesks();
 
             if (!availableDesks.isEmpty()) {
-                DeskDTO assignedDesk = availableDesks.get(0); // Atribuir o primeiro balcão disponível
+                DeskDTO assignedDesk = availableDesks.get(0);
 
-                // Criar o ticket a partir do waiting ticket
                 TicketRequest ticketRequest = new TicketRequest();
                 ticketRequest.setCustomerId(waitingTicket.getCustomerId());
                 ticketRequest.setDeviceId(waitingTicket.getDeviceId());
                 ticketRequest.setReason(waitingTicket.getReason());
 
-                // Criar o ticket
                 ticketService.createTicket(ticketRequest);
 
-                // Após criar, pode-se remover da lista de tickets de espera
-                waitingTicketRepository.delete(waitingTicket); // Remover o ticket da espera, se necessário
+                waitingTicketRepository.delete(waitingTicket);
             }
         }
     }
