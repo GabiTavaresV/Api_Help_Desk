@@ -36,7 +36,7 @@ public class TicketService {
     @Autowired
     private DeviceService deviceService;
 
-    private  TicketMapper ticketMapper = new TicketMapper();
+    private TicketMapper ticketMapper = new TicketMapper();
 
     public TicketDTO createTicket(TicketRequest ticketRequest) throws NotFoundDBException {
         validateTicketRequest(ticketRequest);
@@ -71,19 +71,23 @@ public class TicketService {
     }
 
     private void ensureNoActiveTicketForSerialNumber(String serialNumber, Long customerId) {
-        if (ticketRepository.countActiveTicketsBySerialNumber(serialNumber, TicketStatus.ABERTO) > 0) {
-            throw new ForbiddenException("Outro chamado já está em atendimento para o serial number: " + serialNumber);
-        }
 
         if (ticketRepository.countActiveTicketsByCustomerAndSerialNumber(customerId, serialNumber, TicketStatus.ABERTO) > 0) {
             throw new ConflictException("O usuário já possui um chamado aberto para o mesmo serial number: " + serialNumber);
         }
+        if (ticketRepository.countActiveTicketsBySerialNumberNotConcluded(serialNumber, TicketStatus.CONCLUIDO) > 0) {
+            throw new ForbiddenException("Outro chamado já está em atendimento para o serial number: " + serialNumber);
+        }
+
     }
 
     private DeskDTO findAvailableDesk() {
         List<DeskDTO> availableDesks = deskService.findAvailableDesks();
+
         for (DeskDTO desk : availableDesks) {
-            if (ticketRepository.countOpenTicketsByDeskId(desk.getId(), TicketStatus.ABERTO) < 5) {
+            long nonConcludedTicketsCount = ticketRepository.countTicketsByDeskIdAndNotStatus(desk.getId(), TicketStatus.CONCLUIDO);
+
+            if (nonConcludedTicketsCount < 5) {
                 return desk;
             }
         }
