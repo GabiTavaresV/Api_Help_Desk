@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/ticket")
@@ -29,8 +28,8 @@ public class TicketController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<Ticket>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
-        List<Ticket> list = ticketService.listAllTickets(pageable);
+    public ResponseEntity<Page<Ticket>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        Page<Ticket> list = ticketService.listAllTickets(pageable);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

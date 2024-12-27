@@ -3,12 +3,14 @@ package com.api.helpdesk.controller;
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.service.AttendantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/attendant")
@@ -24,8 +26,8 @@ public class AttendantController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<AttendantDTO>> getAll() {
-        List<AttendantDTO> list = attendantService.getAllAttendants();
+    public ResponseEntity<Page<AttendantDTO>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        Page<AttendantDTO> list = attendantService.getAllAttendants(pageable);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

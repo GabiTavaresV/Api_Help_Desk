@@ -117,8 +117,8 @@ public class TicketService {
                 .build();
     }
 
-    public List<Ticket> listAllTickets(Pageable pageable) {
-        return ticketRepository.findAll(pageable).getContent();
+    public Page<Ticket> listAllTickets(Pageable pageable) {
+        return ticketRepository.findAll(pageable);
     }
 
     public Page<Ticket> listTicketsByCustomerId(Long customerId, Pageable pageable) {

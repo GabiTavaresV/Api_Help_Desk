@@ -3,18 +3,15 @@ package com.api.helpdesk.service;
 import com.api.helpdesk.controller.handler.EmailAlreadyExistsException;
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.entity.Attendant;
-import com.api.helpdesk.entity.Users;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.AttendantMapper;
-import com.api.helpdesk.mapper.UserMapper;
 import com.api.helpdesk.repository.AttendantRepository;
-import com.api.helpdesk.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AttendantService {
@@ -38,11 +35,10 @@ public class AttendantService {
         return attendantMapper.toDTO(savedAttendant);
     }
 
-    public List<AttendantDTO> getAllAttendants() {
-        List<Attendant> attendants = attendantRepository.findAllActiveAttendants();
-        return attendants.stream()
-                .map(attendantMapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<AttendantDTO> getAllAttendants(Pageable pageable) {
+        Page<Attendant> attendants = attendantRepository.findAllActiveAttendants(pageable);
+        return attendants
+                .map(attendantMapper::toDTO);
     }
 
     public AttendantDTO getAttendantById(Long id) throws NotFoundDBException {

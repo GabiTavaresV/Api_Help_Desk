@@ -7,11 +7,11 @@ import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.DeviceMapper;
 import com.api.helpdesk.repository.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class DeviceService {
@@ -31,11 +31,9 @@ public class DeviceService {
         return deviceMapper.toDTO(savedDevice);
     }
 
-    public List<DeviceDTO> getAllDevices() {
-        List<Device> devices = deviceRepository.findAllActiveDevices();
-        return devices.stream()
-                .map(deviceMapper::toDTO)
-                .collect(Collectors.toList());
+    public Page<DeviceDTO> getAllDevices(Pageable pageable) {
+        Page<Device> devices = deviceRepository.findAllActiveDevices(pageable);
+        return devices.map(deviceMapper::toDTO);
     }
 
     public DeviceDTO getDeviceById(Long id) throws NotFoundDBException {

@@ -10,6 +10,8 @@ import com.api.helpdesk.repository.DeskRepository;
 import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,18 +52,15 @@ public class DeskService {
         return deskMapper.toDTO(savedDesk);
     }
 
-    public List<DeskDTO> getAllDesks() {
-        List<Desk> desks = deskRepository.findAllActiveDesks();
-        List<DeskDTO> deskDTOs = new ArrayList<>();
+    public Page<DeskDTO> getAllDesks(Pageable pageable) {
+        Page<Desk> desksPage = deskRepository.findAllActiveDesks(pageable);
 
-        for (Desk desk : desks) {
+        return desksPage.map(desk -> {
             long openTicketsCount = ticketRepository.countTicketsByDeskIdAndStatusNot(desk.getId(), TicketStatus.CONCLUIDO);
             DeskDTO deskDTO = deskMapper.toDTO(desk);
             deskDTO.setOpenTicketsCount((int) openTicketsCount);
-            deskDTOs.add(deskDTO);
-        }
-
-        return deskDTOs;
+            return deskDTO;
+        });
     }
 
     public DeskDTO getDeskById(Long id) throws NotFoundDBException {

@@ -3,11 +3,13 @@ package com.api.helpdesk.controller;
 import com.api.helpdesk.dto.DeskDTO;
 import com.api.helpdesk.service.DeskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/desk")
@@ -23,8 +25,8 @@ public class DeskController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<List<DeskDTO>> getAll() {
-        List<DeskDTO> list = deskService.getAllDesks();
+    public ResponseEntity<Page<DeskDTO>> getAll(@PageableDefault(size = 10, page = 0) Pageable pageable) {
+        Page<DeskDTO> list = deskService.getAllDesks(pageable);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

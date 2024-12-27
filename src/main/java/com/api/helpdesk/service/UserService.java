@@ -6,11 +6,11 @@ import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.UserMapper;
 import com.api.helpdesk.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.api.helpdesk.entity.Users;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -34,9 +34,9 @@ public class UserService {
         return userMapper.toDTO(savedUsers);
     }
 
-    public List<UserDTO> getAllUsers() {
-        List<Users> users = userRepository.findAllActiveUsers();
-        return users.stream().map(userMapper::toDTO).collect(Collectors.toList());
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
+        Page<Users> users = userRepository.findAllActiveUsers(pageable);
+        return users.map(userMapper::toDTO);
 
     }
 
