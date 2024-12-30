@@ -30,8 +30,11 @@ public class DeskService {
     @Autowired
     private AttendantService attendantService;
 
-    private final DeskMapper deskMapper = new DeskMapper();
-    private final AttendantMapper attendantMapper = new AttendantMapper();
+    @Autowired
+    private DeskMapper deskMapper;
+
+    @Autowired
+    private AttendantMapper attendantMapper;
 
     public DeskDTO register(DeskDTO deskDTO) {
         Long deskId = deskDTO.getId();

@@ -19,7 +19,8 @@ public class DeviceService {
     @Autowired
     private DeviceRepository deviceRepository;
 
-    private final DeviceMapper deviceMapper = new DeviceMapper();
+    @Autowired
+    private  DeviceMapper deviceMapper;
 
     public DeviceDTO createDevice(DeviceDTO deviceDTO) {
         String serialNumber = deviceDTO.getSerialNumber();
