@@ -14,17 +14,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AttendantService {
+public class AttendantService  {
 
     @Autowired
-    private AttendantRepository attendantRepository;
-
-    private final AttendantMapper attendantMapper = new AttendantMapper();
+    private  AttendantRepository attendantRepository;
 
     @Autowired
-    public AttendantService(AttendantRepository attendantRepository) {
-        this.attendantRepository = attendantRepository;
-    }
+    private  AttendantMapper attendantMapper;
+
 
     public AttendantDTO register(AttendantDTO attendantDTO) {
         if (attendantRepository.existsByName(attendantDTO.getName())) {
@@ -49,7 +46,7 @@ public class AttendantService {
 
     public Void deleteAttendantById(Long id) throws NotFoundDBException {
         Optional<Attendant> deviceOptional = attendantRepository.findById(id);
-        if (!deviceOptional.isPresent()) {
+        if (deviceOptional.isEmpty()) {
             throw new NotFoundDBException("Atendente não encontrado!");
         }
         attendantRepository.softDeleteAttendantById(id);
