@@ -2,7 +2,9 @@ package com.api.helpdesk.mapper;
 
 import com.api.helpdesk.dto.DeskDTO;
 import com.api.helpdesk.entity.Desk;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DeskMapper {
 
     private final AttendantMapper attendantMapper = new AttendantMapper();
