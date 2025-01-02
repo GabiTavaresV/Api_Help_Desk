@@ -2,17 +2,30 @@ package com.api.helpdesk.mapper;
 
 import com.api.helpdesk.dto.DeskDTO;
 import com.api.helpdesk.entity.Desk;
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+@Component
+public class DeskMapper {
 
-@Mapper(componentModel = "spring")
-public interface DeskMapper {
+    private final AttendantMapper attendantMapper = new AttendantMapper();
 
-    DeskDTO deskToDeskDTO(Desk desk);
-    List<DeskDTO> desksToDeskDTOs(List<Desk> desks);
+    public DeskDTO toDTO(Desk desk) {
+        if (desk == null) {
+            return null;
+        }
+        DeskDTO deskDTO = new DeskDTO();
+        deskDTO.setId(desk.getId());
+        deskDTO.setAttendant(attendantMapper.toDTO(desk.getAttendant()));
+        return deskDTO;
+    }
 
-    Desk deskDTOToDesk(DeskDTO deskDTO);
-    List<Desk> deskDTOsToDesks(List<DeskDTO> deskDTOs);
-
+    public Desk toEntity(DeskDTO deskDTO) {
+        if (deskDTO == null) {
+            return null;
+        }
+        Desk desk = new Desk();
+        desk.setId(deskDTO.getId());
+        desk.setAttendant(attendantMapper.toEntity(deskDTO.getAttendant()));
+        return desk;
+    }
 }
