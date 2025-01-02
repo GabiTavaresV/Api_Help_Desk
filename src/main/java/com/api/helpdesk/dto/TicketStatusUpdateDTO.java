@@ -10,5 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketStatusUpdateDTO {
+
     private TicketStatus status;
 }
