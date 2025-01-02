@@ -34,7 +34,7 @@ public class AttendantRepositoryTest {
     public void setUp() {
         attendant = new Attendant();
         attendant.setName("Attendant Name");
-        attendant.setDeleted(false);
+        attendant.setIsDeleted(false);
         entityManager.persistAndFlush(attendant);
     }
 
