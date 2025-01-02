@@ -17,7 +17,7 @@ import java.util.Optional;
 public class AttendantService  {
 
     @Autowired
-    private  AttendantRepository attendantRepository;
+    private AttendantRepository attendantRepository;
 
     @Autowired
     private  AttendantMapper attendantMapper;
