@@ -21,6 +21,7 @@ public class TicketMapper {
         ticketDTO.setId(ticket.getId());
         ticketDTO.setReason(ticket.getReason());
         ticketDTO.setStatus(ticket.getStatus());
+        ticketDTO.setIsDeleted(ticket.getIsDeleted());
 
         if (ticket.getCustomer() != null) {
             ticketDTO.setCustomer(userMapper.toDTO(ticket.getCustomer()));
@@ -46,6 +47,7 @@ public class TicketMapper {
         ticket.setStatus(ticketDTO.getStatus());
         ticket.setUpdatedAt(LocalDateTime.now());
         ticket.setCreatedAt(LocalDateTime.now());
+        ticket.setIsDeleted(ticketDTO.getIsDeleted()!= null ? ticketDTO.getIsDeleted() : false);
 
         if (ticketDTO.getCustomer() != null) {
             ticket.setCustomer(userMapper.toEntity(ticketDTO.getCustomer()));

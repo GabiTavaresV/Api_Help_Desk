@@ -15,6 +15,7 @@ public class UserMapper {
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
+        userDTO.setIsDeleted(user.isDeleted());
         return userDTO;
     }
 
@@ -26,6 +27,7 @@ public class UserMapper {
         users.setId(userDTO.getId());
         users.setName(userDTO.getName());
         users.setEmail(userDTO.getEmail());
+        users.setDeleted(userDTO.getIsDeleted() != null ? userDTO.getIsDeleted() : false);
         return users;
     }
 }

@@ -14,6 +14,7 @@ public class AttendantMapper {
         AttendantDTO attendantDTO = new AttendantDTO();
         attendantDTO.setId(attendant.getId());
         attendantDTO.setName(attendant.getName());
+        attendantDTO.setIsDeleted(attendant.getIsDeleted());
         return attendantDTO;
     }
 
@@ -24,6 +25,7 @@ public class AttendantMapper {
         Attendant attendant = new Attendant();
         attendant.setId(attendantDTO.getId());
         attendant.setName(attendantDTO.getName());
+        attendant.setIsDeleted(attendantDTO.getIsDeleted() != null ? attendantDTO.getIsDeleted() : false);
         return attendant;
     }
 }

@@ -16,6 +16,7 @@ public class DeskMapper {
         DeskDTO deskDTO = new DeskDTO();
         deskDTO.setId(desk.getId());
         deskDTO.setAttendant(attendantMapper.toDTO(desk.getAttendant()));
+        deskDTO.setIsDeleted(desk.getIsDeleted());
         return deskDTO;
     }
 
@@ -26,6 +27,7 @@ public class DeskMapper {
         Desk desk = new Desk();
         desk.setId(deskDTO.getId());
         desk.setAttendant(attendantMapper.toEntity(deskDTO.getAttendant()));
+        desk.setIsDeleted(deskDTO.getIsDeleted() != null ? deskDTO.getIsDeleted() : false);
         return desk;
     }
 }

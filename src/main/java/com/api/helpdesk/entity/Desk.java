@@ -1,20 +1,16 @@
 package com.api.helpdesk.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Entity
+@Table(name = "desk")
 @Builder
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "desk")
 public class Desk {
 
     @Id
@@ -25,10 +21,6 @@ public class Desk {
     @JoinColumn(name = "attendant_id", referencedColumnName = "id")
     private Attendant attendant;
 
-    @OneToMany(mappedBy = "desk")
-    @JsonIgnore
-    private List<Ticket> tickets = new ArrayList<>();
-
     @Column(nullable = false)
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 }

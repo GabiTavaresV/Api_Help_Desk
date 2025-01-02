@@ -34,10 +34,6 @@ public class Users {
     @NotBlank(message = "O e-mail não pode ser vazio.")
     private String email;
 
-    @OneToMany(mappedBy = "customer")
-    @JsonIgnore
-    private List<Ticket> tickets;
-
     @Column(nullable = false)
     private boolean isDeleted = false;
 }

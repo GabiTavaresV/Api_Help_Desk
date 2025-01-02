@@ -7,14 +7,14 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "ticket")
 @Builder
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "ticket")
 
 public class Ticket {
 
@@ -47,7 +47,7 @@ public class Ticket {
     private TicketStatus status;
 
     @Column(nullable = false)
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;

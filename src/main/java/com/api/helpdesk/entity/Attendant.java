@@ -13,14 +13,14 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "attendant")
 @Builder
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "attendant")
 public class Attendant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +35,5 @@ public class Attendant {
     private List<Desk> desks = new ArrayList<>();
 
     @Column(nullable = false)
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 }

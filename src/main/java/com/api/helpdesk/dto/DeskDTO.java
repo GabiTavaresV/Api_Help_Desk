@@ -13,4 +13,5 @@ public class DeskDTO {
     private Long id;
     private AttendantDTO attendant;
     private int openTicketsCount;
+    private Boolean isDeleted;
 }
