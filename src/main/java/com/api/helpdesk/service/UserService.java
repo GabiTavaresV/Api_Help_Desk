@@ -1,6 +1,6 @@
 package com.api.helpdesk.service;
 
-import com.api.helpdesk.controller.handler.EmailAlreadyExistsException;
+import com.api.helpdesk.exception.EmailAlreadyExistsException;
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.UserMapper;
