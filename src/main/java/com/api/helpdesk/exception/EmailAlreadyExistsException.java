@@ -1,4 +1,4 @@
-package com.api.helpdesk.controller.handler;
+package com.api.helpdesk.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
