@@ -1,11 +1,5 @@
 package com.api.helpdesk.controller;
 
-import com.api.helpdesk.dto.TicketDTO;
-import com.api.helpdesk.dto.TicketRequest;
-import com.api.helpdesk.dto.TicketStatusUpdateDTO;
-import com.api.helpdesk.entity.Ticket;
-import com.api.helpdesk.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,13 +7,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.api.helpdesk.dto.TicketStatusUpdateDTO;
+import com.api.helpdesk.dto.TicketDTO;
+import com.api.helpdesk.entity.Ticket;
+import com.api.helpdesk.dto.TicketRequest;
+import com.api.helpdesk.service.TicketService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/ticket")
 public class TicketController {
 
-    @Autowired
-    private TicketService ticketService;
+    private final TicketService ticketService;
 
     @PostMapping
     public ResponseEntity<TicketDTO>  create( @RequestBody TicketRequest TicketRequest) {

@@ -1,8 +1,5 @@
 package com.api.helpdesk.controller;
 
-import com.api.helpdesk.dto.DeskDTO;
-import com.api.helpdesk.service.DeskService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,12 +7,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequiredArgsConstructor()
+import com.api.helpdesk.dto.DeskDTO;
+import com.api.helpdesk.service.DeskService;
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/desk")
 public class DeskController {
 
-    private DeskService deskService;
+    private final DeskService deskService;
 
     @PostMapping
     public ResponseEntity<DeskDTO> create(@RequestBody DeskDTO desk) {
