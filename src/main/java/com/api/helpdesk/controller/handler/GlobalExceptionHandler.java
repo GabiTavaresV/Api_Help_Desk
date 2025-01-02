@@ -1,6 +1,7 @@
 package com.api.helpdesk.controller.handler;
 
 import com.api.helpdesk.exception.ConflictException;
+import com.api.helpdesk.exception.EmailAlreadyExistsException;
 import com.api.helpdesk.exception.ForbiddenException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
