@@ -1,8 +1,9 @@
 package com.api.helpdesk.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.api.helpdesk.dto.DeviceDTO;
 import com.api.helpdesk.entity.Device;
-import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceMapper {

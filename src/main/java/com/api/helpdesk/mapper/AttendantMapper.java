@@ -1,8 +1,10 @@
 package com.api.helpdesk.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.entity.Attendant;
-import org.springframework.stereotype.Component;
+
 
 @Component
 public class AttendantMapper {

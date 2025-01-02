@@ -1,8 +1,9 @@
 package com.api.helpdesk.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.api.helpdesk.dto.TicketDTO;
 import com.api.helpdesk.entity.Ticket;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 

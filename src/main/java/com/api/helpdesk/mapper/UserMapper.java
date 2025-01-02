@@ -1,8 +1,9 @@
 package com.api.helpdesk.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.entity.Users;
-import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
