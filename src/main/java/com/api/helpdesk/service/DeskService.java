@@ -2,10 +2,13 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.dto.DeskDTO;
+import com.api.helpdesk.entity.Attendant;
 import com.api.helpdesk.entity.Desk;
 import com.api.helpdesk.exception.NotFoundDBException;
+import com.api.helpdesk.exception.SoftDeleteException;
 import com.api.helpdesk.mapper.AttendantMapper;
 import com.api.helpdesk.mapper.DeskMapper;
+import com.api.helpdesk.repository.AttendantRepository;
 import com.api.helpdesk.repository.DeskRepository;
 import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.utils.TicketStatus;
@@ -36,6 +39,9 @@ public class DeskService {
     @Autowired
     private AttendantMapper attendantMapper;
 
+    @Autowired
+    private AttendantRepository attendantRepository;
+
     public DeskDTO register(DeskDTO deskDTO) {
         Long deskId = deskDTO.getId();
 
@@ -48,12 +54,24 @@ public class DeskService {
         Desk desk = deskMapper.toEntity(deskDTO);
 
         AttendantDTO attendant = attendantService.getAttendantById(deskDTO.getAttendant().getId());
+        boolean attendantAssigned = deskRepository.isAttendantAssigned(attendant.getId());
+
+        if (attendantAssigned) {
+            throw new IllegalStateException("O atendente já está atribuído a um balcão.");
+        }
+
+        Optional<Attendant> deletedAttendant = attendantRepository.findDeletedAttendantById(attendant.getId());
+
+        if (deletedAttendant.isPresent()) {
+                throw new SoftDeleteException("Atendente Não encontrado.");
+        }
         desk.setAttendant(attendantMapper.toEntity(attendant));
 
         Desk savedDesk = deskRepository.save(desk);
 
         return deskMapper.toDTO(savedDesk);
     }
+
 
     public Page<DeskDTO> getAllDesks(Pageable pageable) {
         Page<Desk> desksPage = deskRepository.findAllActiveDesks(pageable);
@@ -76,6 +94,12 @@ public class DeskService {
         Optional<Desk> deskOptional = deskRepository.findById(id);
         if (!deskOptional.isPresent()) {
             throw new NotFoundDBException("Equipamento não encontrado!");
+        }
+
+        long activeTicketsCount = ticketRepository.countTicketsByDeskIdAndNotConcluded(id, TicketStatus.CONCLUIDO);
+
+        if (activeTicketsCount > 0) {
+            throw new SoftDeleteException("Não é possível deletar o balcão. Existem chamados não concluídos vinculados.");
         }
         deskRepository.softDeleteDeskById(id);
         return null;
