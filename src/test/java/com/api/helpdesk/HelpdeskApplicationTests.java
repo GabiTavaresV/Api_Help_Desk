@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class HelpdeskApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void testMain() {
+		HelpdeskApplication.main(new String[0]);
 	}
 
 }
