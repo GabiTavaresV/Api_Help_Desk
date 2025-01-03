@@ -22,6 +22,6 @@ public class TicketDTO {
     private LocalDateTime resolvedDate;
     private String reason;
     private TicketStatus status;
-    private  Boolean isDeleted;
+    private Boolean isDeleted;
     private LocalDateTime updatedAt;
 }

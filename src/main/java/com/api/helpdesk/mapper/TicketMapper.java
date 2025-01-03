@@ -23,6 +23,8 @@ public class TicketMapper {
         ticketDTO.setReason(ticket.getReason());
         ticketDTO.setStatus(ticket.getStatus());
         ticketDTO.setIsDeleted(ticket.getIsDeleted());
+        ticketDTO.setCreatedAt(ticket.getCreatedAt());
+        ticketDTO.setUpdatedAt(ticket.getUpdatedAt());
 
         if (ticket.getCustomer() != null) {
             ticketDTO.setCustomer(userMapper.toDTO(ticket.getCustomer()));
