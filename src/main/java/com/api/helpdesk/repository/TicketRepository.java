@@ -40,5 +40,17 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.device.serialNumber = :serialNumber AND t.status <> :status")
     long countActiveTicketsBySerialNumberNotConcluded(@Param("serialNumber") String serialNumber, @Param("status") TicketStatus status);
 
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.customer.id = :customerId AND t.status <> :status")
+    long countTicketsByCustomerIdAndNotConcluded(@Param("customerId") Long customerId, @Param("status") TicketStatus status);
+
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.attendant.id = :attendantId AND t.status <> :status")
+    long countTicketsByAttendantIdAndNotConcluded(@Param("attendantId") Long attendantId, @Param("status") TicketStatus status);
+
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.device.id = :deviceId AND t.status <> :status")
+    long countTicketsByDeviceIdAndNotConcluded(@Param("deviceId") Long deviceId, @Param("status") TicketStatus status);
+
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
+    long countTicketsByDeskIdAndNotConcluded(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
+
 }
 
