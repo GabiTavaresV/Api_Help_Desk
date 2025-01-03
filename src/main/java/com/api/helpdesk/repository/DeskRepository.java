@@ -33,4 +33,7 @@ public interface DeskRepository extends JpaRepository<Desk, Long> {
 
     @Query("SELECT d FROM Desk d WHERE d.attendant IS NOT NULL")
     List<Desk> findAllWithAttendant();
+
+    @Query("SELECT COUNT(d) > 0 FROM Desk d WHERE d.attendant.id = :attendantId")
+    boolean isAttendantAssigned(@Param("attendantId") Long attendantId);
 }
