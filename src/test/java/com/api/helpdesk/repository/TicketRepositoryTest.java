@@ -1,97 +1,111 @@
+
 package com.api.helpdesk.repository;
 
-import com.api.helpdesk.entity.*;
+import com.api.helpdesk.entity.Device;
+import com.api.helpdesk.entity.Ticket;
+import com.api.helpdesk.entity.Users;
 import com.api.helpdesk.utils.TicketStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class TicketRepositoryTest {
+
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Autowired
     private TicketRepository ticketRepository;
 
-    @Autowired
-    private DeviceRepository deviceRepository;
-
-    @Autowired
-    private UserRepository usersRepository;
-
-    @Autowired
-    private DeskRepository deskRepository;
-
-    private Users customer;
-    private Device device;
     private Ticket ticket;
-    private Desk desk;
-    private Attendant attendant;
+    private Users user;
+    private Device device;
 
     @BeforeEach
     public void setUp() {
-        customer = new Users();
-        customer.setName("Test Customer");
-        customer.setEmail("customer@example.com");
-        usersRepository.save(customer);
+        user = new Users();
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        entityManager.persistAndFlush(user);
 
         device = new Device();
-        device.setSerialNumber("SN12345");
-        deviceRepository.save(device);
+        device.setSerialNumber("ABC123");
+        entityManager.persistAndFlush(device);
 
         ticket = new Ticket();
-        ticket.setCustomer(customer);
+        ticket.setCustomer(user);
         ticket.setDevice(device);
         ticket.setStatus(TicketStatus.ABERTO);
         ticket.setCreatedAt(LocalDateTime.now());
-        ticket.setIsDeleted(false);
-        ticketRepository.save(ticket);
-
-        desk = new Desk();
-        desk.setAttendant(attendant);
+        ticket.setUpdatedAt(LocalDateTime.now());
+        entityManager.persistAndFlush(ticket);
     }
 
     @Test
     public void whenFindByCustomerId_thenReturnTickets() {
-        Page<Ticket> tickets = ticketRepository.findByCustomerId(customer.getId(), PageRequest.of(0, 10));
-        assertThat(tickets.getContent()).contains(ticket);
+        Long customerId = user.getId();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Ticket> ticketsPage = ticketRepository.findByCustomerId(customerId, pageable);
+        assertThat(ticketsPage.hasContent()).isTrue();
+        assertTrue(ticketsPage.getContent().contains(ticket));
+        assertThat(ticketsPage.getTotalElements()).isGreaterThan(0);
+        assertThat(ticketsPage.getSize()).isLessThanOrEqualTo(10);
     }
 
     @Test
     public void whenFindByDeskId_thenReturnTickets() {
-        // Para este teste, você pode precisar criar um Desk para associar ao ticket
-        // O código depende de como a sua entidade Ticket é implementada
+        Long deskId = ticket.getDesk() != null ? ticket.getDesk().getId() : null;
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Ticket> ticketsPage = ticketRepository.findByDeskId(deskId, pageable);
+        assertThat(ticketsPage.getContent()).isEmpty();
     }
 
     @Test
     public void whenSoftDeleteTicketById_thenTicketIsDeleted() {
-        ticketRepository.softDeleteTicketById(ticket.getId());
-        Ticket deletedTicket = ticketRepository.findById(ticket.getId()).orElse(null);
-        assertThat(deletedTicket).isNotNull();
-        assertTrue(deletedTicket.getIsDeleted());
+        Long ticketId = ticket.getId();
+        ticketRepository.softDeleteTicketById(ticketId);
+        Optional<Ticket> deletedTicket = ticketRepository.findById(ticketId);
+        assertTrue(deletedTicket.isEmpty());
     }
 
     @Test
-    public void whenCountOpenTicketsByDeskId_thenReturnCount() {
-        long count = ticketRepository.countOpenTicketsByDeskId(desk.getId(), TicketStatus.ABERTO);
-        assertEquals(1, count);
+    public void whenCountTicketsByDeskIdAndStatusNot_thenReturnCount() {
+        Long deskId = ticket.getDesk() != null ? ticket.getDesk().getId() : null;
+        long count = ticketRepository.countTicketsByDeskIdAndStatusNot(deskId, TicketStatus.CONCLUIDO);
+        assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    public void whenCountOpenTicketsByDeskId_thenReturnCountOfOpenTickets() {
+        Long deskId = ticket.getDesk() != null ? ticket.getDesk().getId() : null;
+        long count = ticketRepository.countOpenTicketsByDeskId(deskId, TicketStatus.ABERTO);
+        assertThat(count).isEqualTo(1);
     }
 
     @Test
     public void whenCountActiveTicketsByCustomerAndSerialNumber_thenReturnCount() {
-        long count = ticketRepository.countActiveTicketsByCustomerAndSerialNumber(customer.getId(), device.getSerialNumber(), TicketStatus.ABERTO);
-        assertEquals(1, count);
+        long count = ticketRepository.countActiveTicketsByCustomerAndSerialNumber(user.getId(), device.getSerialNumber(), TicketStatus.ABERTO);
+        assertThat(count).isEqualTo(1);
     }
 
+    @Test
+    public void whenCountActiveTicketsBySerialNumberNotConcluded_thenReturnCount() {
+        long count = ticketRepository.countActiveTicketsBySerialNumberNotConcluded(device.getSerialNumber(), TicketStatus.CONCLUIDO);
+        assertThat(count).isEqualTo(1);
+    }
 }
-
