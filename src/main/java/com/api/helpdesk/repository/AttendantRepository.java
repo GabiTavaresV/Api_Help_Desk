@@ -28,4 +28,7 @@ public interface AttendantRepository extends JpaRepository<Attendant, Long> {
 
     @Query("SELECT at FROM Attendant at WHERE at.id = :id AND at.isDeleted = false")
     Optional<Attendant> findActiveAttendantById(@Param("id") Long id);
+
+    @Query(value = "SELECT * FROM attendant WHERE id = :attendantId AND is_deleted = true", nativeQuery = true)
+    Optional<Attendant> findDeletedAttendantById(@Param("attendantId") Long attendantId);
 }
