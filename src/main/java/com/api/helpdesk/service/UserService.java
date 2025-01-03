@@ -1,10 +1,13 @@
 package com.api.helpdesk.service;
 
-import com.api.helpdesk.exception.EmailAlreadyExistsException;
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.exception.NotFoundDBException;
+import com.api.helpdesk.exception.SoftDeleteException;
+import com.api.helpdesk.exception.UserAlreadyExistsException;
 import com.api.helpdesk.mapper.UserMapper;
+import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.repository.UserRepository;
+import com.api.helpdesk.utils.TicketStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +22,15 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
     private UserMapper userMapper;
 
 
     public UserDTO register(UserDTO userDTO) {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new EmailAlreadyExistsException("Usuário já cadastrado.");
+            throw new UserAlreadyExistsException("Usuário já cadastrado.");
         }
 
         Users users = userMapper.toEntity(userDTO);
@@ -48,6 +54,12 @@ public class UserService {
         Optional<Users> deviceOptional = userRepository.findById(id);
         if (!deviceOptional.isPresent()) {
             throw new NotFoundDBException("Usuário não encontrado!");
+        }
+
+        long openTicketsCount = ticketRepository.countTicketsByCustomerIdAndNotConcluded(id, TicketStatus.CONCLUIDO);
+
+        if (openTicketsCount > 0) {
+            throw new SoftDeleteException("Não é possível deletar o usuário. Chamados abertos existentes.");
         }
         userRepository.softDeleteUserById(id);
         return null;
