@@ -2,6 +2,7 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.entity.Users;
+import com.api.helpdesk.exception.EmailAlreadyExistsException;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.UserMapper;
 import com.api.helpdesk.repository.UserRepository;
@@ -10,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -56,13 +57,18 @@ public class UserServiceTest {
 
         when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(false);
 
-        Users usersEntity = new Users(null, userDTO.getName(), userDTO.getEmail(), null, false);
+        Users usersEntity = new Users();
         when(userMapper.toEntity(userDTO)).thenReturn(usersEntity);
 
-        Users savedUser = new Users(1L, userDTO.getName(), userDTO.getEmail(), null, false);
+        Users savedUser = new Users();
+        savedUser.setId(1L);
+        savedUser.setName(userDTO.getName());
+        savedUser.setEmail(userDTO.getEmail());
+        savedUser.setDeleted(false);
+
         when(userRepository.save(usersEntity)).thenReturn(savedUser);
 
-        when(userMapper.toDTO(savedUser)).thenReturn(new UserDTO(1L, savedUser.getName(), savedUser.getEmail()));
+        when(userMapper.toDTO(savedUser)).thenReturn(new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail(), savedUser.isDeleted()));
 
         UserDTO result = userService.register(userDTO);
 
@@ -71,6 +77,19 @@ public class UserServiceTest {
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo(userDTO.getName());
         assertThat(result.getEmail()).isEqualTo(userDTO.getEmail());
+    }
+
+    @Test
+    void testRegisterUser_EmailAlreadyExists() {
+        userDTO.setEmail("email@email.com");
+        when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(true);
+
+        EmailAlreadyExistsException thrown = assertThrows(EmailAlreadyExistsException.class, () -> {
+            userService.register(userDTO);
+        });
+        assertEquals("Usuário já cadastrado.", thrown.getMessage());
+
+        verify(userRepository, never()).save(any(Users.class));
     }
 
     @Test
