@@ -163,4 +163,35 @@ class DeskServiceTest {
         assertThat(result).isEqualTo(deskDTO);
         assertThat(result.getOpenTicketsCount()).isEqualTo(2);
     }
+
+    @Test
+    void testFindAvailableDesks() {
+        Desk desk1 = new Desk();
+        desk1.setId(1L);
+        Desk desk2 = new Desk();
+        desk2.setId(2L);
+        Desk desk3 = new Desk();
+        desk3.setId(3L);
+
+        List<Desk> desksWithAttendant = List.of(desk1, desk2, desk3);
+
+        when(deskRepository.findAllWithAttendant()).thenReturn(desksWithAttendant);
+
+        when(ticketRepository.countOpenTicketsByDeskId(desk1.getId(), TicketStatus.ABERTO)).thenReturn(3L);
+        when(ticketRepository.countOpenTicketsByDeskId(desk2.getId(), TicketStatus.ABERTO)).thenReturn(5L);
+        when(ticketRepository.countOpenTicketsByDeskId(desk3.getId(), TicketStatus.ABERTO)).thenReturn(1L);
+
+        DeskDTO deskDTO1 = new DeskDTO();
+        deskDTO1.setId(desk1.getId());
+        DeskDTO deskDTO3 = new DeskDTO();
+        deskDTO3.setId(desk3.getId());
+
+        when(deskMapper.toDTO(desk1)).thenReturn(deskDTO1);
+        when(deskMapper.toDTO(desk3)).thenReturn(deskDTO3);
+
+        List<DeskDTO> availableDesks = deskService.findAvailableDesks();
+
+        assertThat(availableDesks).hasSize(2);
+        assertThat(availableDesks).contains(deskDTO1, deskDTO3);
+    }
 }
