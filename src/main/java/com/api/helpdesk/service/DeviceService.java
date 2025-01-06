@@ -35,18 +35,18 @@ public class DeviceService {
         }
         Device device = deviceMapper.toEntity(deviceDTO);
         Device savedDevice = deviceRepository.save(device);
-        return deviceMapper.toDTO(savedDevice);
+        return deviceMapper.toDto(savedDevice);
     }
 
     public Page<DeviceDTO> getAllDevices(Pageable pageable) {
         Page<Device> devices = deviceRepository.findAllActiveDevices(pageable);
-        return devices.map(deviceMapper::toDTO);
+        return devices.map(deviceMapper::toDto);
     }
 
     public DeviceDTO getDeviceById(Long id) throws NotFoundDBException {
         Device device = deviceRepository.findActiveDeviceById(id)
                 .orElseThrow(() -> new NotFoundDBException("Aparelho não encontrado!"));
-        return deviceMapper.toDTO(device);
+        return deviceMapper.toDto(device);
     }
 
     public Void deleteDeviceById(Long id) throws NotFoundDBException {

@@ -33,21 +33,21 @@ public class AttendantService  {
         if (attendantRepository.existsByName(attendantDTO.getName())) {
             throw new AttendantAlreadyExistsException("Atendente já cadastrado.");
         }
-        Attendant attendant = attendantMapper.toEntity(attendantDTO);
+        Attendant attendant = attendantMapper.attendantDTOToAttendant(attendantDTO);
         Attendant savedAttendant = attendantRepository.save(attendant);
-        return attendantMapper.toDTO(savedAttendant);
+        return attendantMapper.attendantToAttendantDTO(savedAttendant);
     }
 
     public Page<AttendantDTO> getAllAttendants(Pageable pageable) {
         Page<Attendant> attendants = attendantRepository.findAllActiveAttendants(pageable);
         return attendants
-                .map(attendantMapper::toDTO);
+                .map(attendantMapper:: attendantToAttendantDTO);
     }
 
     public AttendantDTO getAttendantById(Long id) throws NotFoundDBException {
         Attendant attendant = attendantRepository.findActiveAttendantById(id)
                 .orElseThrow(() -> new NotFoundDBException("Atendente não encontrado!"));
-        return attendantMapper.toDTO(attendant);
+        return attendantMapper.attendantToAttendantDTO(attendant);
     }
 
     public Void deleteAttendantById(Long id) throws NotFoundDBException {
