@@ -25,6 +25,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("UPDATE Ticket t SET t.isDeleted = true WHERE t.id = :id")
     void softDeleteTicketById(@Param("id") Long id);
 
+    @Query("SELECT t.isDeleted FROM Ticket t WHERE t.id = :id")
+    Boolean isTicketDeleted(@Param("id") Long id);
+
     @Query("SELECT COUNT(t) FROM Ticket t WHERE t.desk.id = :deskId AND t.status <> :status")
     long countTicketsByDeskIdAndStatusNot(@Param("deskId") Long deskId, @Param("status") TicketStatus status);
 
