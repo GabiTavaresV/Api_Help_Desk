@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Component
 public class TicketMapper {
 
-    private final UserMapper userMapper = new UserMapper();
-    private final DeskMapper deskMapper = new DeskMapper();
-    private final DeviceMapper deviceMapper = new DeviceMapper();
+     UserMapper userMapper;
+    DeskMapper deskMapper;
+    DeviceMapper deviceMapper;
 
     public TicketDTO toDTO(Ticket ticket) {
         if (ticket == null) {
@@ -30,11 +30,11 @@ public class TicketMapper {
             ticketDTO.setCustomer(userMapper.toDTO(ticket.getCustomer()));
         }
         if (ticket.getDevice() != null) {
-            ticketDTO.setDevice(deviceMapper.toDTO(ticket.getDevice()));
+            ticketDTO.setDevice(deviceMapper.toDto(ticket.getDevice()));
         }
 
         if (ticket.getDesk() != null) {
-            ticketDTO.setDesk(deskMapper.toDTO(ticket.getDesk()));
+            ticketDTO.setDesk(deskMapper.deskToDeskDTO(ticket.getDesk()));
         }
 
         return ticketDTO;
@@ -61,7 +61,7 @@ public class TicketMapper {
         }
 
         if (ticketDTO.getDesk() != null) {
-            ticket.setDesk(deskMapper.toEntity(ticketDTO.getDesk()));
+            ticket.setDesk(deskMapper.deskDTOToDesk(ticketDTO.getDesk()));
         }
 
         return ticket;
