@@ -18,6 +18,7 @@ import com.api.helpdesk.exception.NotFoundDBException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -137,6 +138,10 @@ public class TicketService {
     }
 
     public Void deleteTicketById(Long id) throws NotFoundDBException {
+        Optional<Ticket> optionalTicket = ticketRepository.findById(id);
+        if (!optionalTicket.isPresent()) {
+            throw new NotFoundDBException("Ticket não encontrado!");
+        }
         ticketRepository.softDeleteTicketById(id);
         return null;
     }
