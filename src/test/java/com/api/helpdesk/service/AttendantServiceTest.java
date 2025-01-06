@@ -1,11 +1,14 @@
 package com.api.helpdesk.service;
 
-import com.api.helpdesk.controller.handler.EmailAlreadyExistsException;
+import com.api.helpdesk.exception.AttendantAlreadyExistsException;
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.entity.Attendant;
 import com.api.helpdesk.exception.NotFoundDBException;
+import com.api.helpdesk.exception.SoftDeleteException;
 import com.api.helpdesk.mapper.AttendantMapper;
 import com.api.helpdesk.repository.AttendantRepository;
+import com.api.helpdesk.repository.TicketRepository;
+import com.api.helpdesk.utils.TicketStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +35,9 @@ class AttendantServiceTest {
 
     @Mock
     private AttendantRepository attendantRepository;
+
+    @Mock
+    private TicketRepository ticketRepository;
 
     @Mock
     private AttendantMapper attendantMapper;
@@ -63,11 +69,11 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testRegister_EmailAlreadyExists() {
+    void testRegister_AttendantAlreadyExists() {
         attendantDTO.setName("Attendant Test");
         when(attendantRepository.existsByName(attendantDTO.getName())).thenReturn(true);
 
-        assertThrows(EmailAlreadyExistsException.class, () -> attendantService.register(attendantDTO));
+        assertThrows(AttendantAlreadyExistsException.class, () -> attendantService.register(attendantDTO)); // Alterado para a exceção correta
     }
 
     @Test
@@ -116,6 +122,26 @@ class AttendantServiceTest {
         when(attendantRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundDBException.class, () -> attendantService.deleteAttendantById(id));
+    }
+
+    @Test
+    void testDeleteAttendantById_WithOpenTickets() {
+        Long id = 1L;
+        when(attendantRepository.findById(id)).thenReturn(Optional.of(new Attendant()));
+        when(ticketRepository.countTicketsByAttendantIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(1L); // Existe 1 chamado aberto
+
+        assertThrows(SoftDeleteException.class, () -> attendantService.deleteAttendantById(id));
+    }
+
+    @Test
+    void testDeleteAttendantById_Success() throws NotFoundDBException {
+        Long id = 1L;
+        when(attendantRepository.findById(id)).thenReturn(Optional.of(new Attendant()));
+        when(ticketRepository.countTicketsByAttendantIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(0L);
+
+        attendantService.deleteAttendantById(id);
+
+        verify(attendantRepository).softDeleteAttendantById(id);
     }
 }
 

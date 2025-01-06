@@ -7,6 +7,7 @@ import com.api.helpdesk.entity.Desk;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.AttendantMapper;
 import com.api.helpdesk.mapper.DeskMapper;
+import com.api.helpdesk.repository.AttendantRepository;
 import com.api.helpdesk.repository.DeskRepository;
 import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.utils.TicketStatus;
@@ -47,6 +48,9 @@ class DeskServiceTest {
     @Mock
     private AttendantMapper attendantMapper;
 
+    @Mock
+    private AttendantRepository attendantRepository;
+
     @InjectMocks
     private DeskService deskService;
 
@@ -65,6 +69,7 @@ class DeskServiceTest {
     void testRegister() {
         deskDTO.setId(1L);
         deskDTO.setAttendant(attendantDTO);
+        attendantDTO.setId(1L);
 
         when(deskRepository.countOpenTicketsByDeskId(deskDTO.getId(), TicketStatus.CONCLUIDO)).thenReturn(0L);
         when(deskMapper.toEntity(deskDTO)).thenReturn(desk);
@@ -72,6 +77,10 @@ class DeskServiceTest {
         when(attendantMapper.toEntity(attendantDTO)).thenReturn(new Attendant());
 
         doReturn(desk).when(deskRepository).save(any(Desk.class));
+
+        when(deskRepository.isAttendantAssigned(attendantDTO.getId())).thenReturn(false);
+
+        when(attendantRepository.findDeletedAttendantById(attendantDTO.getId())).thenReturn(Optional.empty());
 
         when(deskMapper.toDTO(desk)).thenReturn(deskDTO);
 
@@ -162,5 +171,36 @@ class DeskServiceTest {
 
         assertThat(result).isEqualTo(deskDTO);
         assertThat(result.getOpenTicketsCount()).isEqualTo(2);
+    }
+
+    @Test
+    void testFindAvailableDesks() {
+        Desk desk1 = new Desk();
+        desk1.setId(1L);
+        Desk desk2 = new Desk();
+        desk2.setId(2L);
+        Desk desk3 = new Desk();
+        desk3.setId(3L);
+
+        List<Desk> desksWithAttendant = List.of(desk1, desk2, desk3);
+
+        when(deskRepository.findAllWithAttendant()).thenReturn(desksWithAttendant);
+
+        when(ticketRepository.countOpenTicketsByDeskId(desk1.getId(), TicketStatus.ABERTO)).thenReturn(3L);
+        when(ticketRepository.countOpenTicketsByDeskId(desk2.getId(), TicketStatus.ABERTO)).thenReturn(5L);
+        when(ticketRepository.countOpenTicketsByDeskId(desk3.getId(), TicketStatus.ABERTO)).thenReturn(1L);
+
+        DeskDTO deskDTO1 = new DeskDTO();
+        deskDTO1.setId(desk1.getId());
+        DeskDTO deskDTO3 = new DeskDTO();
+        deskDTO3.setId(desk3.getId());
+
+        when(deskMapper.toDTO(desk1)).thenReturn(deskDTO1);
+        when(deskMapper.toDTO(desk3)).thenReturn(deskDTO3);
+
+        List<DeskDTO> availableDesks = deskService.findAvailableDesks();
+
+        assertThat(availableDesks).hasSize(2);
+        assertThat(availableDesks).contains(deskDTO1, deskDTO3);
     }
 }

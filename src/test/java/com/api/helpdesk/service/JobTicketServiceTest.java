@@ -22,7 +22,7 @@ public class JobTicketServiceTest {
     private TicketRepository ticketRepository;
 
     @InjectMocks
-    private JobTicket jobTicket;
+    private JobTicketService jobTicket;
 
     private List<Ticket> tickets;
 

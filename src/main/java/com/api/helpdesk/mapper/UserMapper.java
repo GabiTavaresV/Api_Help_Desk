@@ -1,8 +1,9 @@
 package com.api.helpdesk.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.entity.Users;
-import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
@@ -15,6 +16,7 @@ public class UserMapper {
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
+        userDTO.setIsDeleted(user.isDeleted());
         return userDTO;
     }
 
@@ -26,6 +28,7 @@ public class UserMapper {
         users.setId(userDTO.getId());
         users.setName(userDTO.getName());
         users.setEmail(userDTO.getEmail());
+        users.setDeleted(userDTO.getIsDeleted() != null ? userDTO.getIsDeleted() : false);
         return users;
     }
 }

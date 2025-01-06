@@ -5,6 +5,7 @@ import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.entity.WaitingLine;
 import com.api.helpdesk.exception.ConflictException;
 import com.api.helpdesk.exception.ForbiddenException;
+import com.api.helpdesk.exception.InputRequiredException;
 import com.api.helpdesk.mapper.*;
 import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.repository.WaitingLineRepository;
@@ -17,6 +18,7 @@ import com.api.helpdesk.exception.NotFoundDBException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -66,7 +68,7 @@ public class TicketService {
 
     private void validateTicketRequest(TicketRequest ticketRequest) {
         if (ticketRequest.getCustomerId() == null || ticketRequest.getDeviceId() == null || ticketRequest.getReason() == null) {
-            throw new IllegalArgumentException("Id do Cliente, Id do Aparelho e motivo do chamado são obrigatórios!.");
+            throw new InputRequiredException("Id do Cliente, Id do Aparelho e motivo do chamado são obrigatórios!.");
         }
     }
 
@@ -136,6 +138,10 @@ public class TicketService {
     }
 
     public Void deleteTicketById(Long id) throws NotFoundDBException {
+        Optional<Ticket> optionalTicket = ticketRepository.findById(id);
+        if (!optionalTicket.isPresent()) {
+            throw new NotFoundDBException("Ticket não encontrado!");
+        }
         ticketRepository.softDeleteTicketById(id);
         return null;
     }

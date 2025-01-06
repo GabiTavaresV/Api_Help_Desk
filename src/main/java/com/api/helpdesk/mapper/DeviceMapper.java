@@ -1,8 +1,9 @@
 package com.api.helpdesk.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.api.helpdesk.dto.DeviceDTO;
 import com.api.helpdesk.entity.Device;
-import org.springframework.stereotype.Component;
 
 @Component
 public class DeviceMapper {
@@ -11,7 +12,12 @@ public class DeviceMapper {
         if (device == null) {
             return null;
         }
-        return new DeviceDTO(device.getId(), device.getSerialNumber());
+       DeviceDTO deviceDTO = new DeviceDTO();
+        deviceDTO.setId(device.getId());
+        deviceDTO.setSerialNumber(device.getSerialNumber());
+        deviceDTO.setIsDeleted(device.getIsDeleted());
+
+        return deviceDTO;
     }
 
     public Device toEntity(DeviceDTO deviceDTO) {
@@ -21,6 +27,7 @@ public class DeviceMapper {
         Device device = new Device();
         device.setId(deviceDTO.getId());
         device.setSerialNumber(deviceDTO.getSerialNumber());
+        device.setIsDeleted(deviceDTO.getIsDeleted() != null ? deviceDTO.getIsDeleted() : false);
         return device;
     }
 }

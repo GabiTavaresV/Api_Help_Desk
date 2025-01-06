@@ -35,7 +35,7 @@ public class DeviceRepositoryTest {
     public void setUp() {
         device = new Device();
         device.setSerialNumber("SN123456");
-        device.setDeleted(false);
+        device.setIsDeleted(false);
         entityManager.persistAndFlush(device);
     }
 

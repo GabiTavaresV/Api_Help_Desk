@@ -15,11 +15,13 @@ import java.time.LocalDateTime;
 public class TicketDTO {
 
     private Long id;
+    private UserDTO customer;
+    private DeskDTO desk;
+    private DeviceDTO device;
+    private LocalDateTime createdAt;
+    private LocalDateTime resolvedDate;
     private String reason;
     private TicketStatus status;
-    private UserDTO customer;
-    private DeviceDTO device;
-    private DeskDTO desk;
-    private LocalDateTime createdAt;
+    private Boolean isDeleted;
     private LocalDateTime updatedAt;
 }

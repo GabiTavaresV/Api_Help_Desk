@@ -1,9 +1,6 @@
 package com.api.helpdesk.controller;
 
-import com.api.helpdesk.dto.DeviceDTO;
-import com.api.helpdesk.service.DeviceService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -11,13 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.api.helpdesk.dto.DeviceDTO;
+import com.api.helpdesk.service.DeviceService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/device")
 public class DeviceController {
 
-    @Autowired
-    private DeviceService deviceService;
+    private final DeviceService deviceService;
 
     @PostMapping
     public ResponseEntity<DeviceDTO> create(@Valid @RequestBody DeviceDTO device) {

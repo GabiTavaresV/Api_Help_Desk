@@ -1,23 +1,24 @@
 package com.api.helpdesk.controller;
 
-import com.api.helpdesk.dto.AttendantDTO;
-import com.api.helpdesk.service.AttendantService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 
+import com.api.helpdesk.dto.AttendantDTO;
+import com.api.helpdesk.service.AttendantService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/attendant")
 public class AttendantController {
 
-    @Autowired
-    private AttendantService attendantService;
+    private final AttendantService attendantService;
 
     @PostMapping
     public ResponseEntity<AttendantDTO> create(@Valid @RequestBody AttendantDTO attendant) {

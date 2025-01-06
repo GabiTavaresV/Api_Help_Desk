@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 
 public class TicketRequest {
+
     private Long customerId;
     private Long deviceId;
     private String reason;

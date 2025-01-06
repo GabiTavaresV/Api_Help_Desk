@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class JobTicket {
+public class JobTicketService {
 
     private final TicketRepository ticketRepository;
 
-    public JobTicket(TicketRepository ticketRepository) {
+    public JobTicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
 

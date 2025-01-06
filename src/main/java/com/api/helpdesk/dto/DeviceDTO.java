@@ -13,4 +13,5 @@ public class DeviceDTO {
 
     private Long id;
     private String serialNumber;
+    private Boolean isDeleted;
 }
