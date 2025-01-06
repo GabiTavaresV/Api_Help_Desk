@@ -1,34 +1,25 @@
 package com.api.helpdesk.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.entity.Users;
 
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    public UserDTO toDTO(Users user) {
+    default UserDTO toDTO(Users user) {
         if (user == null) {
             return null;
         }
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setIsDeleted(user.isDeleted());
-        return userDTO;
+
+        return UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .isDeleted(user.isDeleted())
+                .build();
     }
 
-    public Users toEntity(UserDTO userDTO) {
-        if (userDTO == null) {
-            return null;
-        }
-        Users users = new Users();
-        users.setId(userDTO.getId());
-        users.setName(userDTO.getName());
-        users.setEmail(userDTO.getEmail());
-        users.setDeleted(userDTO.getIsDeleted() != null ? userDTO.getIsDeleted() : false);
-        return users;
-    }
+    Users toEntity(UserDTO userDTO);
 }

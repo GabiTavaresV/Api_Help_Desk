@@ -1,33 +1,25 @@
 package com.api.helpdesk.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.api.helpdesk.dto.AttendantDTO;
 import com.api.helpdesk.entity.Attendant;
+import org.mapstruct.Mapper;
 
 
-@Component
-public class AttendantMapper {
+@Mapper(componentModel = "spring")
+public interface AttendantMapper {
 
-    public AttendantDTO toDTO(Attendant attendant) {
+    default AttendantDTO attendantToAttendantDTO(Attendant attendant) {
         if (attendant == null) {
             return null;
         }
-        AttendantDTO attendantDTO = new AttendantDTO();
-        attendantDTO.setId(attendant.getId());
-        attendantDTO.setName(attendant.getName());
-        attendantDTO.setIsDeleted(attendant.getIsDeleted());
-        return attendantDTO;
+
+        return AttendantDTO.builder()
+                .id(attendant.getId())
+                .name(attendant.getName())
+                .isDeleted(false)
+                .build();
     }
 
-    public Attendant toEntity(AttendantDTO attendantDTO) {
-        if (attendantDTO == null) {
-            return null;
-        }
-        Attendant attendant = new Attendant();
-        attendant.setId(attendantDTO.getId());
-        attendant.setName(attendantDTO.getName());
-        attendant.setIsDeleted(attendantDTO.getIsDeleted() != null ? attendantDTO.getIsDeleted() : false);
-        return attendant;
-    }
+    Attendant attendantDTOToAttendant(AttendantDTO attendantDTO);
+
 }
