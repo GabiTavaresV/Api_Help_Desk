@@ -79,8 +79,8 @@ public class TicketRepositoryTest {
     public void whenSoftDeleteTicketById_thenTicketIsDeleted() {
         Long ticketId = ticket.getId();
         ticketRepository.softDeleteTicketById(ticketId);
-        Optional<Ticket> deletedTicket = ticketRepository.findById(ticketId);
-        assertTrue(deletedTicket.isEmpty());
+        Boolean isDeleted = ticketRepository.isTicketDeleted(ticketId);
+        assertTrue(isDeleted);
     }
 
     @Test
