@@ -2,10 +2,12 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.dto.DeviceDTO;
 import com.api.helpdesk.entity.Device;
-import com.api.helpdesk.exception.ConflictException;
+import com.api.helpdesk.exception.DeviceAlreadyExistsException;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.DeviceMapper;
 import com.api.helpdesk.repository.DeviceRepository;
+import com.api.helpdesk.repository.TicketRepository;
+import com.api.helpdesk.utils.TicketStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,9 @@ public class DeviceServiceTest {
 
     @Mock
     private DeviceRepository deviceRepository;
+
+    @Mock
+    private TicketRepository ticketRepository;
 
     @Mock
     private DeviceMapper deviceMapper;
@@ -67,7 +72,7 @@ public class DeviceServiceTest {
         deviceDTO.setSerialNumber("BRTO-test");
         when(deviceRepository.existsBySerialNumber(deviceDTO.getSerialNumber())).thenReturn(true);
 
-        assertThrows(ConflictException.class, () -> deviceService.createDevice(deviceDTO));
+        assertThrows(DeviceAlreadyExistsException.class, () -> deviceService.createDevice(deviceDTO)); // Mudança aqui
     }
 
     @Test
@@ -102,9 +107,13 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testDeleteAttendantById() throws NotFoundDBException {
+    void testDeleteDeviceById() throws NotFoundDBException {
         Long id = 1L;
         when(deviceRepository.findById(id)).thenReturn(Optional.of(device));
+
+        // Mock para o método do ticketRepository
+        when(ticketRepository.countTicketsByDeviceIdAndNotConcluded(id, TicketStatus.CONCLUIDO))
+                .thenReturn(0L);
 
         deviceService.deleteDeviceById(id);
 

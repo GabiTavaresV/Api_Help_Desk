@@ -4,6 +4,7 @@ import com.api.helpdesk.dto.*;
 import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.exception.ConflictException;
 import com.api.helpdesk.exception.ForbiddenException;
+import com.api.helpdesk.exception.InputRequiredException;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.TicketMapper;
 import com.api.helpdesk.repository.TicketRepository;
@@ -143,7 +144,7 @@ class TicketServiceTest {
     void testCreateTicket_InvalidRequest() {
         ticketRequest.setCustomerId(null);
 
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+        InputRequiredException thrown = assertThrows(InputRequiredException.class, () -> {
             ticketService.createTicket(ticketRequest);
         });
         assertEquals("Id do Cliente, Id do Aparelho e motivo do chamado são obrigatórios!.", thrown.getMessage());
@@ -233,6 +234,7 @@ class TicketServiceTest {
         ticketService.deleteTicketById(ticketId);
 
         verify(ticketRepository).softDeleteTicketById(ticketId);
+        verify(ticketRepository).findById(ticketId); // Adicione esta linha de verificação
     }
 
     @Test

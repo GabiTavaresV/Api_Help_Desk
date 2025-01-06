@@ -7,6 +7,7 @@ import com.api.helpdesk.entity.Desk;
 import com.api.helpdesk.exception.NotFoundDBException;
 import com.api.helpdesk.mapper.AttendantMapper;
 import com.api.helpdesk.mapper.DeskMapper;
+import com.api.helpdesk.repository.AttendantRepository;
 import com.api.helpdesk.repository.DeskRepository;
 import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.utils.TicketStatus;
@@ -47,6 +48,9 @@ class DeskServiceTest {
     @Mock
     private AttendantMapper attendantMapper;
 
+    @Mock
+    private AttendantRepository attendantRepository;
+
     @InjectMocks
     private DeskService deskService;
 
@@ -65,6 +69,7 @@ class DeskServiceTest {
     void testRegister() {
         deskDTO.setId(1L);
         deskDTO.setAttendant(attendantDTO);
+        attendantDTO.setId(1L);
 
         when(deskRepository.countOpenTicketsByDeskId(deskDTO.getId(), TicketStatus.CONCLUIDO)).thenReturn(0L);
         when(deskMapper.toEntity(deskDTO)).thenReturn(desk);
@@ -72,6 +77,10 @@ class DeskServiceTest {
         when(attendantMapper.toEntity(attendantDTO)).thenReturn(new Attendant());
 
         doReturn(desk).when(deskRepository).save(any(Desk.class));
+
+        when(deskRepository.isAttendantAssigned(attendantDTO.getId())).thenReturn(false);
+
+        when(attendantRepository.findDeletedAttendantById(attendantDTO.getId())).thenReturn(Optional.empty());
 
         when(deskMapper.toDTO(desk)).thenReturn(deskDTO);
 

@@ -2,10 +2,13 @@ package com.api.helpdesk.service;
 
 import com.api.helpdesk.dto.UserDTO;
 import com.api.helpdesk.entity.Users;
-import com.api.helpdesk.exception.EmailAlreadyExistsException;
 import com.api.helpdesk.exception.NotFoundDBException;
+import com.api.helpdesk.exception.SoftDeleteException;
+import com.api.helpdesk.exception.UserAlreadyExistsException;
 import com.api.helpdesk.mapper.UserMapper;
+import com.api.helpdesk.repository.TicketRepository;
 import com.api.helpdesk.repository.UserRepository;
+import com.api.helpdesk.utils.TicketStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +37,9 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private TicketRepository ticketRepository;
 
     @Mock
     private UserMapper userMapper;
@@ -84,7 +90,7 @@ public class UserServiceTest {
         userDTO.setEmail("email@email.com");
         when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(true);
 
-        EmailAlreadyExistsException thrown = assertThrows(EmailAlreadyExistsException.class, () -> {
+        UserAlreadyExistsException thrown = assertThrows(UserAlreadyExistsException.class, () -> {
             userService.register(userDTO);
         });
         assertEquals("Usuário já cadastrado.", thrown.getMessage());
@@ -134,21 +140,35 @@ public class UserServiceTest {
     }
 
     @Test
-    void testDeleteUserById() throws NotFoundDBException {
-        Long id = 1L;
-        when(userRepository.findById(id)).thenReturn(Optional.of(users));
-
-        userService.deleteUserById(id);
-
-        verify(userRepository).softDeleteUserById(id);
-    }
-
-    @Test
-    void testDeleteUserById_NotFound() {
+    void testDeleteUserById_NonExistentUser() {
         Long id = 1L;
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundDBException.class, () -> userService.deleteUserById(id));
         verify(userRepository).findById(id);
+    }
+
+    @Test
+    void testDeleteUserById_WithOpenTickets() {
+        Long id = 1L;
+        when(userRepository.findById(id)).thenReturn(Optional.of(users));
+
+        when(ticketRepository.countTicketsByCustomerIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(1L);
+
+        assertThrows(SoftDeleteException.class, () -> userService.deleteUserById(id));
+        verify(userRepository).findById(id);
+        verify(ticketRepository).countTicketsByCustomerIdAndNotConcluded(id, TicketStatus.CONCLUIDO);
+    }
+
+    @Test
+    void testDeleteUserById_Success() throws NotFoundDBException {
+        Long id = 1L;
+        when(userRepository.findById(id)).thenReturn(Optional.of(users));
+
+        when(ticketRepository.countTicketsByCustomerIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(0L);
+
+        userService.deleteUserById(id);
+
+        verify(userRepository).softDeleteUserById(id);
     }
 }
