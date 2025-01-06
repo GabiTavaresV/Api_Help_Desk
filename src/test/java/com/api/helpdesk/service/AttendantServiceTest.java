@@ -58,9 +58,9 @@ class AttendantServiceTest {
     void testRegister() {
         attendantDTO.setName("Attendant Test");
         when(attendantRepository.existsByName(attendantDTO.getName())).thenReturn(false);
-        when(attendantMapper.toEntity(attendantDTO)).thenReturn(attendant);
+        when(attendantMapper.attendantDTOToAttendant(attendantDTO)).thenReturn(attendant);
         when(attendantRepository.save(attendant)).thenReturn(attendant);
-        when(attendantMapper.toDTO(attendant)).thenReturn(attendantDTO);
+        when(attendantMapper.attendantToAttendantDTO(attendant)).thenReturn(attendantDTO);
 
         AttendantDTO result = attendantService.register(attendantDTO);
 
@@ -81,7 +81,7 @@ class AttendantServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Attendant> attendantsPage = new PageImpl<>(List.of(attendant));
         when(attendantRepository.findAllActiveAttendants(pageable)).thenReturn(attendantsPage);
-        when(attendantMapper.toDTO(attendant)).thenReturn(attendantDTO);
+        when(attendantMapper.attendantToAttendantDTO(attendant)).thenReturn(attendantDTO);
 
         Page<AttendantDTO> result = attendantService.getAllAttendants(pageable);
 
@@ -92,7 +92,7 @@ class AttendantServiceTest {
     void testGetAttendantById() throws NotFoundDBException {
         Long id = 1L;
         when(attendantRepository.findActiveAttendantById(id)).thenReturn(Optional.of(attendant));
-        when(attendantMapper.toDTO(attendant)).thenReturn(attendantDTO);
+        when(attendantMapper.attendantToAttendantDTO(attendant)).thenReturn(attendantDTO);
 
         AttendantDTO result = attendantService.getAttendantById(id);
 

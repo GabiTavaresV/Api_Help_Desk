@@ -59,7 +59,7 @@ public class DeviceServiceTest {
         when(deviceRepository.existsBySerialNumber(deviceDTO.getSerialNumber())).thenReturn(false);
         when(deviceMapper.toEntity(deviceDTO)).thenReturn(device);
         when(deviceRepository.save(device)).thenReturn(device);
-        when(deviceMapper.toDTO(device)).thenReturn(deviceDTO);
+        when(deviceMapper.toDto(device)).thenReturn(deviceDTO);
 
         DeviceDTO result = deviceService.createDevice(deviceDTO);
 
@@ -80,7 +80,7 @@ public class DeviceServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Device> devicePage = new PageImpl<>(List.of(device));
         when(deviceRepository.findAllActiveDevices(pageable)).thenReturn(devicePage);
-        when(deviceMapper.toDTO(device)).thenReturn(deviceDTO);
+        when(deviceMapper.toDto(device)).thenReturn(deviceDTO);
 
         Page<DeviceDTO> result = deviceService.getAllDevices(pageable);
 
@@ -91,7 +91,7 @@ public class DeviceServiceTest {
     void testGetAttendantById() throws NotFoundDBException {
         Long id = 1L;
         when(deviceRepository.findActiveDeviceById(id)).thenReturn(Optional.of(device));
-        when(deviceMapper.toDTO(device)).thenReturn(deviceDTO);
+        when(deviceMapper.toDto(device)).thenReturn(deviceDTO);
 
         DeviceDTO result = deviceService.getDeviceById(id);
 

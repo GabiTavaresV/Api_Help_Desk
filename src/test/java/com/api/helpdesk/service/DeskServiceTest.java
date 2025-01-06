@@ -72,9 +72,9 @@ class DeskServiceTest {
         attendantDTO.setId(1L);
 
         when(deskRepository.countOpenTicketsByDeskId(deskDTO.getId(), TicketStatus.CONCLUIDO)).thenReturn(0L);
-        when(deskMapper.toEntity(deskDTO)).thenReturn(desk);
+        when(deskMapper.deskDTOToDesk(deskDTO)).thenReturn(desk);
         when(attendantService.getAttendantById(attendantDTO.getId())).thenReturn(attendantDTO);
-        when(attendantMapper.toEntity(attendantDTO)).thenReturn(new Attendant());
+        when(attendantMapper.attendantDTOToAttendant(attendantDTO)).thenReturn(new Attendant());
 
         doReturn(desk).when(deskRepository).save(any(Desk.class));
 
@@ -82,7 +82,7 @@ class DeskServiceTest {
 
         when(attendantRepository.findDeletedAttendantById(attendantDTO.getId())).thenReturn(Optional.empty());
 
-        when(deskMapper.toDTO(desk)).thenReturn(deskDTO);
+        when(deskMapper.deskToDeskDTO(desk)).thenReturn(deskDTO);
 
         DeskDTO result = deskService.register(deskDTO);
 
@@ -103,7 +103,7 @@ class DeskServiceTest {
         Pageable pageable = Pageable.ofSize(10);
         Page<Desk> desksPage = new PageImpl<>(List.of(desk));
         when(deskRepository.findAllActiveDesks(pageable)).thenReturn(desksPage);
-        when(deskMapper.toDTO(desk)).thenReturn(deskDTO);
+        when(deskMapper.deskToDeskDTO(desk)).thenReturn(deskDTO);
         when(ticketRepository.countTicketsByDeskIdAndStatusNot(desk.getId(), TicketStatus.CONCLUIDO)).thenReturn(2L);
 
         Page<DeskDTO> result = deskService.getAllDesks(pageable);
@@ -116,7 +116,7 @@ class DeskServiceTest {
     void testGetDeskById() throws NotFoundDBException {
         Long id = 1L;
         when(deskRepository.findActiveDeskById(id)).thenReturn(Optional.of(desk));
-        when(deskMapper.toDTO(desk)).thenReturn(deskDTO);
+        when(deskMapper.deskToDeskDTO(desk)).thenReturn(deskDTO);
 
         DeskDTO result = deskService.getDeskById(id);
 
@@ -165,7 +165,7 @@ class DeskServiceTest {
         deskDTO.setId(deskId);
         when(deskRepository.findActiveDeskById(deskId)).thenReturn(Optional.of(desk));
         when(ticketRepository.countTicketsByDeskIdAndStatusNot(deskId, TicketStatus.CONCLUIDO)).thenReturn(2L);
-        when(deskMapper.toDTO(desk)).thenReturn(deskDTO);
+        when(deskMapper.deskToDeskDTO(desk)).thenReturn(deskDTO);
 
         DeskDTO result = deskService.getDeskDetails(deskId);
 
@@ -195,8 +195,8 @@ class DeskServiceTest {
         DeskDTO deskDTO3 = new DeskDTO();
         deskDTO3.setId(desk3.getId());
 
-        when(deskMapper.toDTO(desk1)).thenReturn(deskDTO1);
-        when(deskMapper.toDTO(desk3)).thenReturn(deskDTO3);
+        when(deskMapper.deskToDeskDTO(desk1)).thenReturn(deskDTO1);
+        when(deskMapper.deskToDeskDTO(desk3)).thenReturn(deskDTO3);
 
         List<DeskDTO> availableDesks = deskService.findAvailableDesks();
 
