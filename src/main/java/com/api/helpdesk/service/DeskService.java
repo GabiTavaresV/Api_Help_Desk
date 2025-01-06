@@ -45,13 +45,18 @@ public class DeskService {
     public DeskDTO register(DeskDTO deskDTO) {
         Long deskId = deskDTO.getId();
 
+        if (deskDTO.getIsDeleted() == null) {
+
+            deskDTO.setIsDeleted(false);
+
+        }
         long openTicketsCount = deskRepository.countOpenTicketsByDeskId(deskId, TicketStatus.CONCLUIDO);
 
         if (openTicketsCount >= 5) {
             throw new IllegalStateException("Não é possível criar mais chamados. O número máximo de chamados em aberto foi atingido.");
         }
 
-        Desk desk = deskMapper.toEntity(deskDTO);
+        Desk desk = deskMapper.deskDTOToDesk(deskDTO);
 
         AttendantDTO attendant = attendantService.getAttendantById(deskDTO.getAttendant().getId());
         boolean attendantAssigned = deskRepository.isAttendantAssigned(attendant.getId());
@@ -63,13 +68,13 @@ public class DeskService {
         Optional<Attendant> deletedAttendant = attendantRepository.findDeletedAttendantById(attendant.getId());
 
         if (deletedAttendant.isPresent()) {
-                throw new SoftDeleteException("Atendente Não encontrado.");
+            throw new SoftDeleteException("Atendente Não encontrado.");
         }
-        desk.setAttendant(attendantMapper.toEntity(attendant));
+        desk.setAttendant(attendantMapper.attendantDTOToAttendant(attendant));
 
         Desk savedDesk = deskRepository.save(desk);
 
-        return deskMapper.toDTO(savedDesk);
+        return deskMapper.deskToDeskDTO(savedDesk);
     }
 
 
@@ -78,7 +83,7 @@ public class DeskService {
 
         return desksPage.map(desk -> {
             long openTicketsCount = ticketRepository.countTicketsByDeskIdAndStatusNot(desk.getId(), TicketStatus.CONCLUIDO);
-            DeskDTO deskDTO = deskMapper.toDTO(desk);
+            DeskDTO deskDTO = deskMapper.deskToDeskDTO(desk);
             deskDTO.setOpenTicketsCount((int) openTicketsCount);
             return deskDTO;
         });
@@ -87,7 +92,7 @@ public class DeskService {
     public DeskDTO getDeskById(Long id) throws NotFoundDBException {
         Desk desk = deskRepository.findActiveDeskById(id)
                 .orElseThrow(() -> new NotFoundDBException("Balcão não encontrado!"));
-        return deskMapper.toDTO(desk);
+        return deskMapper.deskToDeskDTO(desk);
     }
 
     public Void deleteDeskById(Long id) throws NotFoundDBException {
@@ -126,7 +131,7 @@ public class DeskService {
             System.out.println("Desk ID: " + desk.getId() + ", Open Tickets: " + openTicketsCount);
 
             if (openTicketsCount < 5) {
-                availableDesks.add(deskMapper.toDTO(desk));
+                availableDesks.add(deskMapper.deskToDeskDTO(desk));
                 System.out.println("Desk ID: " + desk.getId() + " is added to available desks.");
             }
         }
