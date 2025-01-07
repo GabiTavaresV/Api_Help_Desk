@@ -28,9 +28,9 @@ public class AttendantControllerTest {
     }
 
     @Test
-    void deveCriarAtendente() {
+    void whenPostAttendant_thenCreateAttendant() {
         AttendantDTO attendant = new AttendantDTO();
-        attendant.setName("John Doe");
+        attendant.setName("Maria Aparecida");
 
         when(attendantService.register(any(AttendantDTO.class)))
                 .thenReturn(attendant);
@@ -39,13 +39,13 @@ public class AttendantControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getName()).isEqualTo("John Doe");
+        assertThat(response.getBody().getName()).isEqualTo("Maria Aparecida");
 
         verify(attendantService).register(any(AttendantDTO.class));
     }
 
     @Test
-    void deveRetornarListaDeAtendentes() {
+    void whenGetAttendants_thenListAllAttendants() {
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         AttendantDTO attendant1 = new AttendantDTO();
         attendant1.setName("John Doe");
@@ -69,7 +69,7 @@ public class AttendantControllerTest {
     }
 
     @Test
-    void deveRetornarAtendentePorId() {
+    void whenGetAttendantById_thenReturnAttendant() {
         Long attendantId = 1L;
         AttendantDTO attendant = new AttendantDTO();
         attendant.setName("John Doe");
@@ -86,7 +86,7 @@ public class AttendantControllerTest {
     }
 
     @Test
-    void deveDeletarAtendente() {
+    void whenDeleteAttendantById_thenAttendantIsDeleted() {
         Long attendantId = 1L;
 
         ResponseEntity<Void> response = attendantController.delete(attendantId);
