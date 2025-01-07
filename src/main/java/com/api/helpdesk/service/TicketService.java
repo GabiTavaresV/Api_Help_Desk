@@ -38,7 +38,8 @@ public class TicketService {
     @Autowired
     private DeviceService deviceService;
 
-    private TicketMapper ticketMapper = new TicketMapper();
+    @Autowired
+    private TicketMapper ticketMapper;
 
     public TicketDTO createTicket(TicketRequest ticketRequest) throws NotFoundDBException {
         validateTicketRequest(ticketRequest);
