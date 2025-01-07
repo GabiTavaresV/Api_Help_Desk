@@ -29,7 +29,7 @@ public class DeskControllerTest {
     }
 
     @Test
-    void deveCriarDesk() {
+    void whenPostDesk_thenCreateDesk() {
         AttendantDTO attendantDTO = new AttendantDTO();
         DeskDTO desk = new DeskDTO();
         desk.setAttendant(attendantDTO);
@@ -47,7 +47,7 @@ public class DeskControllerTest {
     }
 
     @Test
-    void deveRetornarListaDeDesks() {
+    void whenGetDesks_thenListAllDesks() {
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         AttendantDTO attendantDTO = new AttendantDTO();
         DeskDTO desk1 = new DeskDTO();
@@ -84,7 +84,7 @@ public class DeskControllerTest {
     }
 
     @Test
-    void deveRetornarDetalhesDaDesk() {
+    void whenGetDeskById_thenReturnDesk() {
         Long deskId = 1L;
         DeskDTO deskDetails = new DeskDTO();
         AttendantDTO attendantDTO = new AttendantDTO();
