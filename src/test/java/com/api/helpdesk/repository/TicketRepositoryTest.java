@@ -1,6 +1,7 @@
 
 package com.api.helpdesk.repository;
 
+import com.api.helpdesk.entity.Desk;
 import com.api.helpdesk.entity.Device;
 import com.api.helpdesk.entity.Ticket;
 import com.api.helpdesk.entity.Users;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,6 +35,7 @@ public class TicketRepositoryTest {
     private Ticket ticket;
     private Users user;
     private Device device;
+    private Desk desk;
 
     @BeforeEach
     public void setUp() {
@@ -47,9 +48,13 @@ public class TicketRepositoryTest {
         device.setSerialNumber("ABC123");
         entityManager.persistAndFlush(device);
 
+        desk = new Desk();
+        entityManager.persistAndFlush(desk);
+
         ticket = new Ticket();
         ticket.setCustomer(user);
         ticket.setDevice(device);
+        ticket.setDesk(desk);
         ticket.setStatus(TicketStatus.ABERTO);
         ticket.setCreatedAt(LocalDateTime.now());
         ticket.setUpdatedAt(LocalDateTime.now());
@@ -69,9 +74,13 @@ public class TicketRepositoryTest {
 
     @Test
     public void whenFindByDeskId_thenReturnTickets() {
-        Long deskId = ticket.getDesk() != null ? ticket.getDesk().getId() : null;
+        Desk anotherDesk = new Desk();
+        entityManager.persistAndFlush(anotherDesk);
+
+        Long deskId = anotherDesk.getId();
         Pageable pageable = PageRequest.of(0, 10);
         Page<Ticket> ticketsPage = ticketRepository.findByDeskId(deskId, pageable);
+
         assertThat(ticketsPage.getContent()).isEmpty();
     }
 
