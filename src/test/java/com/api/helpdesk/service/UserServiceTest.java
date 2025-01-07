@@ -57,7 +57,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testRegisterUser() {
+    void whenRegisterUser_thenUserIsRegistered() {
         userDTO.setEmail("email@email.com");
         userDTO.setName("name");
 
@@ -86,7 +86,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testRegisterUser_EmailAlreadyExists() {
+    void whenRegisterUser_withExistingEmail_thenReturnEmailAlreadyExists() {
         userDTO.setEmail("email@email.com");
         when(userRepository.existsByEmail(userDTO.getEmail())).thenReturn(true);
 
@@ -99,7 +99,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testGetAllUsers() {
+    void whenGetAllUsers_thenReturnAllUsers() {
         users.setId(1L);
         users.setName("Test User");
         users.setEmail("test@example.com");
@@ -118,7 +118,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testGetUserById() throws NotFoundDBException {
+    void whenGetUserById_thenReturnUser() throws NotFoundDBException {
         Long id = 1L;
         users.setId(id);
         when(userRepository.findActiveUserById(id)).thenReturn(Optional.of(users));
@@ -131,7 +131,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testGetUserById_NotFound() {
+    void whenGetUserById_withNonExistentId_thenReturnNotFound() {
         Long id = 1L;
         when(userRepository.findActiveUserById(id)).thenReturn(Optional.empty());
 
@@ -140,7 +140,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testDeleteUserById_NonExistentUser() {
+    void whenDeleteUserById_withNonExistentUser_thenReturnNotFound() {
         Long id = 1L;
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -149,7 +149,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testDeleteUserById_WithOpenTickets() {
+    void whenDeleteUserById_withOpenTickets_thenReturnCannotDelete() {
         Long id = 1L;
         when(userRepository.findById(id)).thenReturn(Optional.of(users));
 
@@ -161,7 +161,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testDeleteUserById_Success() throws NotFoundDBException {
+    void whenDeleteUserById_withExistingId_thenUserIsDeletedSuccessfully() throws NotFoundDBException {
         Long id = 1L;
         when(userRepository.findById(id)).thenReturn(Optional.of(users));
 

@@ -84,7 +84,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testCreateTicket_Success() throws NotFoundDBException {
+    void whenCreateTicket_thenTicketIsCreatedSuccessfully() throws NotFoundDBException {
         when(userService.getUserById(ticketRequest.getCustomerId())).thenReturn(userDTO);
         when(deviceService.getDeviceById(ticketRequest.getDeviceId())).thenReturn(deviceDTO);
         when(ticketRepository.countActiveTicketsByCustomerAndSerialNumber(ticketRequest.getCustomerId(), deviceDTO.getSerialNumber(), TicketStatus.ABERTO)).thenReturn(0L);
@@ -102,7 +102,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testCreateTicket_NoAvailableDesk() throws NotFoundDBException {
+    void whenCreateTicket_withNoAvailableDesk_thenReturnNoAvailableDesk() throws NotFoundDBException {
         when(userService.getUserById(ticketRequest.getCustomerId())).thenReturn(userDTO);
         when(deviceService.getDeviceById(ticketRequest.getDeviceId())).thenReturn(deviceDTO);
         when(ticketRepository.countActiveTicketsByCustomerAndSerialNumber(ticketRequest.getCustomerId(), deviceDTO.getSerialNumber(), TicketStatus.ABERTO)).thenReturn(0L);
@@ -116,7 +116,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testCreateTicket_Conflict() {
+    void whenCreateTicket_withConflict_thenReturnConflict() {
         when(userService.getUserById(ticketRequest.getCustomerId())).thenReturn(userDTO);
         when(deviceService.getDeviceById(ticketRequest.getDeviceId())).thenReturn(deviceDTO);
         when(ticketRepository.countActiveTicketsByCustomerAndSerialNumber(ticketRequest.getCustomerId(), deviceDTO.getSerialNumber(), TicketStatus.ABERTO)).thenReturn(1L);
@@ -128,7 +128,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testCreateTicket_Forbidden() {
+    void whenCreateTicket_withForbiddenRequest_thenReturnForbidden() {
         when(userService.getUserById(ticketRequest.getCustomerId())).thenReturn(userDTO);
         when(deviceService.getDeviceById(ticketRequest.getDeviceId())).thenReturn(deviceDTO);
         when(ticketRepository.countActiveTicketsByCustomerAndSerialNumber(ticketRequest.getCustomerId(), deviceDTO.getSerialNumber(), TicketStatus.ABERTO)).thenReturn(0L);
@@ -141,7 +141,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testCreateTicket_InvalidRequest() {
+    void whenCreateTicket_withInvalidRequest_thenReturnInvalidRequest() {
         ticketRequest.setCustomerId(null);
 
         InputRequiredException thrown = assertThrows(InputRequiredException.class, () -> {
@@ -151,7 +151,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testListAllTickets() {
+    void whenListAllTickets_thenReturnAllTickets() {
         Pageable pageable = Pageable.ofSize(10);
         List<Ticket> tickets = List.of(new Ticket());
         Page<Ticket> ticketPage = new PageImpl<>(tickets, pageable, tickets.size());
@@ -166,7 +166,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testListTicketsByCustomerId() {
+    void whenListTicketsByCustomerId_thenReturnTicketsForCustomer() {
         Long customerId = 1L;
         Pageable pageable = Pageable.ofSize(10);
         List<Ticket> tickets = List.of(new Ticket());
@@ -182,7 +182,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testGetTicketDetails() throws NotFoundDBException {
+    void whenGetTicketDetails_thenReturnTicketDetails() throws NotFoundDBException {
         Long ticketId = 1L;
         Ticket ticket = new Ticket();
         ticket.setId(ticketId);
@@ -197,7 +197,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testGetTicketDetails_NotFound() {
+    void whenGetTicketDetails_withNonExistentId_thenReturnNotFound() {
         Long ticketId = 1L;
 
         when(ticketRepository.findById(ticketId)).thenReturn(Optional.empty());
@@ -208,7 +208,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testListTicketsByDeskId() {
+    void whenListTicketsByDeskId_thenReturnTicketsForDesk() {
         Long deskId = 1L;
         Pageable pageable = Pageable.ofSize(10);
         List<Ticket> tickets = List.of(new Ticket());
@@ -224,7 +224,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testDeleteTicketById() throws NotFoundDBException {
+    void whenDeleteTicketById_thenTicketIsDeleted() throws NotFoundDBException {
         Long ticketId = 1L;
         Ticket ticket = new Ticket();
         ticket.setId(ticketId);
@@ -238,7 +238,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testDeleteTicketById_NotFound() {
+    void whenDeleteTicketById_withNonExistentId_thenReturnNotFound() {
         Long ticketId = 1L;
 
         when(ticketRepository.findById(ticketId)).thenReturn(Optional.empty());
@@ -247,7 +247,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testUpdateStatusById() throws NotFoundDBException {
+    void whenUpdateStatusById_thenStatusIsUpdated() throws NotFoundDBException {
         Long ticketId = 1L;
         Ticket ticket = new Ticket();
         ticket.setId(ticketId);
@@ -263,7 +263,7 @@ class TicketServiceTest {
     }
 
     @Test
-    void testUpdateStatusById_NotFound() {
+    void whenUpdateStatusById_withNonExistentId_thenReturnNotFound() {
         Long ticketId = 1L;
 
         when(ticketRepository.findById(ticketId)).thenReturn(Optional.empty());

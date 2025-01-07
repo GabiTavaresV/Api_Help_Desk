@@ -12,7 +12,7 @@ class AttendantMapperTest {
     private final AttendantMapper attendantMapper = Mappers.getMapper(AttendantMapper.class);
 
     @Test
-    void testAttendantToAttendantDTO() {
+    void whenConvertAttendantToAttendantDTO_thenReturnAttendantDTO() {
         Attendant attendant = new Attendant();
         attendant.setId(1L);
         attendant.setName("John Doe");
@@ -22,18 +22,18 @@ class AttendantMapperTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(attendant.getId());
         assertThat(result.getName()).isEqualTo(attendant.getName());
-        assertThat(result.getIsDeleted()).isFalse(); // Verifica se o valor padrão é false
+        assertThat(result.getIsDeleted()).isFalse();
     }
 
     @Test
-    void testAttendantToAttendantDTO_Null() {
+    void whenConvertAttendantToAttendantDTO_withNullAttendant_thenReturnNull() {
         AttendantDTO result = attendantMapper.attendantToAttendantDTO(null);
 
         assertThat(result).isNull();
     }
 
     @Test
-    void testAttendantDTOToAttendant() {
+    void whenConvertAttendantDTOToAttendant_thenReturnAttendant() {
         AttendantDTO attendantDTO = AttendantDTO.builder()
                 .id(1L)
                 .name("John Doe")

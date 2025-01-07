@@ -42,8 +42,7 @@ public class WaitingLineServiceTest {
     }
 
     @Test
-    void testProcessWaitingTickets_WithAvailableDesks() {
-        // Setup
+    void whenProcessWaitingTickets_withAvailableDesks_thenTicketsAreProcessed() {
         List<WaitingLine> waitingTickets = new ArrayList<>();
         waitingTickets.add(waitingTicket);
 
@@ -66,7 +65,7 @@ public class WaitingLineServiceTest {
     }
 
     @Test
-    void testProcessWaitingTickets_WithNoAvailableDesks() {
+    void whenProcessWaitingTickets_withNoAvailableDesks_thenReturnNoAvailableDesks() {
         List<WaitingLine> waitingTickets = new ArrayList<>();
         waitingTickets.add(waitingTicket);
 
@@ -80,7 +79,7 @@ public class WaitingLineServiceTest {
     }
 
     @Test
-    void testProcessWaitingTickets_WithNoWaitingTickets() {
+    void whenProcessWaitingTickets_withNoWaitingTickets_thenReturnNoWaitingTickets() {
         when(waitingTicketRepository.findAll()).thenReturn(new ArrayList<>());
 
         waitingLineService.processWaitingTickets();

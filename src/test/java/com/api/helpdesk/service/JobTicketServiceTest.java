@@ -33,7 +33,7 @@ public class JobTicketServiceTest {
     }
 
     @Test
-    void testProcessTickets_OpenToWaiting() {
+    void whenProcessTickets_withOpenToWaiting_thenUpdateStatus() {
         Ticket ticket1 = new Ticket();
         ticket1.setStatus(TicketStatus.ABERTO);
         LocalDateTime originalUpdatedAt = LocalDateTime.now().minusSeconds(31);
@@ -53,7 +53,7 @@ public class JobTicketServiceTest {
     }
 
     @Test
-    void testProcessTickets_WaitingToInProgress() {
+    void whenProcessTickets_withWaitingToInProgress_thenUpdateStatus() {
         Ticket ticket2 = new Ticket();
         ticket2.setStatus(TicketStatus.EM_ESPERA);
         LocalDateTime originalUpdatedAt = LocalDateTime.now().minusSeconds(31);
@@ -71,7 +71,7 @@ public class JobTicketServiceTest {
     }
 
     @Test
-    void testProcessTickets_InProgressToCompleted() {
+    void whenProcessTickets_withInProgressToCompleted_thenUpdateStatus() {
         Ticket ticket3 = new Ticket();
         ticket3.setStatus(TicketStatus.EM_ATENDIMENTO);
         LocalDateTime originalUpdatedAt = LocalDateTime.now().minusSeconds(31);
@@ -92,7 +92,7 @@ public class JobTicketServiceTest {
     }
 
     @Test
-    void testProcessTickets_NoUpdateNeeded() {
+    void whenProcessTickets_withNoUpdateNeeded_thenStatusRemainsTheSame() {
         Ticket ticket4 = new Ticket();
         ticket4.setStatus(TicketStatus.ABERTO);
         ticket4.setUpdatedAt(LocalDateTime.now().minusSeconds(10));

@@ -55,7 +55,7 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testRegister() {
+    void whenRegisterDevice_thenDeviceIsRegistered() {
         deviceDTO.setSerialNumber("BRTO-test");
         when(deviceRepository.existsBySerialNumber(deviceDTO.getSerialNumber())).thenReturn(false);
         when(deviceMapper.toEntity(deviceDTO)).thenReturn(device);
@@ -69,7 +69,7 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testeRegisterUser_SerialNumberExistes() {
+    void whenRegisterUser_withExistingSerialNumber_thenReturnSerialNumberExists() {
         deviceDTO.setSerialNumber("BRTO-test");
         when(deviceRepository.existsBySerialNumber(deviceDTO.getSerialNumber())).thenReturn(true);
 
@@ -77,7 +77,7 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testGetAllDevices() {
+    void whenGetAllDevices_thenReturnAllDevices() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Device> devicePage = new PageImpl<>(List.of(device));
         when(deviceRepository.findAllActiveDevices(pageable)).thenReturn(devicePage);
@@ -89,7 +89,7 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testGetAttendantById() throws NotFoundDBException {
+    void whenGetAttendantById_thenReturnAttendant() throws NotFoundDBException {
         Long id = 1L;
         when(deviceRepository.findActiveDeviceById(id)).thenReturn(Optional.of(device));
         when(deviceMapper.toDto(device)).thenReturn(deviceDTO);
@@ -100,7 +100,7 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testGetAttendantById_NotFound() {
+    void whenGetAttendantById_withNonExistentId_thenReturnNotFound() {
         Long id = 1L;
         when(deviceRepository.findActiveDeviceById(id)).thenReturn(Optional.empty());
 
@@ -108,11 +108,10 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testDeleteDeviceById() throws NotFoundDBException {
+    void whenDeleteDeviceById_thenDeviceIsDeleted() throws NotFoundDBException {
         Long id = 1L;
         when(deviceRepository.findById(id)).thenReturn(Optional.of(device));
 
-        // Mock para o método do ticketRepository
         when(ticketRepository.countTicketsByDeviceIdAndNotConcluded(id, TicketStatus.CONCLUIDO))
                 .thenReturn(0L);
 
@@ -122,7 +121,7 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testDeleteAttendantById_NotFound() {
+    void whenDeleteAttendantById_withNonExistentId_thenReturnNotFound() {
         Long id = 1L;
         when(deviceRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -130,7 +129,7 @@ public class DeviceServiceTest {
     }
 
     @Test
-    void testDeleteDeviceById_HasOpenTickets() {
+    void whenDeleteDeviceById_withOpenTickets_thenReturnCannotDelete() {
         Long id = 1L;
         when(deviceRepository.findById(id)).thenReturn(Optional.of(device));
 

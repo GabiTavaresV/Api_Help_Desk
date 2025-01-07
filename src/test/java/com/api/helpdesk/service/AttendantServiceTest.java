@@ -55,7 +55,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testRegister() {
+    void whenRegisterAttendant_thenAttendantIsRegistered() {
         attendantDTO.setName("Attendant Test");
         when(attendantRepository.existsByName(attendantDTO.getName())).thenReturn(false);
         when(attendantMapper.attendantDTOToAttendant(attendantDTO)).thenReturn(attendant);
@@ -69,7 +69,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testRegister_AttendantAlreadyExists() {
+    void whenRegisterAttendant_withExistingAttendant_thenReturnAttendantAlreadyExists() {
         attendantDTO.setName("Attendant Test");
         when(attendantRepository.existsByName(attendantDTO.getName())).thenReturn(true);
 
@@ -77,7 +77,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testGetAllAttendants() {
+    void whenGetAllAttendants_thenReturnAllAttendants() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Attendant> attendantsPage = new PageImpl<>(List.of(attendant));
         when(attendantRepository.findAllActiveAttendants(pageable)).thenReturn(attendantsPage);
@@ -89,7 +89,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testGetAttendantById() throws NotFoundDBException {
+    void whenGetAttendantById_thenReturnAttendant() throws NotFoundDBException {
         Long id = 1L;
         when(attendantRepository.findActiveAttendantById(id)).thenReturn(Optional.of(attendant));
         when(attendantMapper.attendantToAttendantDTO(attendant)).thenReturn(attendantDTO);
@@ -100,7 +100,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testGetAttendantById_NotFound() {
+    void whenGetAttendantById_withNonExistentId_thenReturnNotFound() {
         Long id = 1L;
         when(attendantRepository.findActiveAttendantById(id)).thenReturn(Optional.empty());
 
@@ -108,7 +108,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testDeleteAttendantById() throws NotFoundDBException {
+    void whenDeleteAttendantById_thenAttendantIsDeleted() throws NotFoundDBException {
         Long id = 1L;
         when(attendantRepository.findById(id)).thenReturn(Optional.of(attendant));
         attendantService.deleteAttendantById(id);
@@ -117,7 +117,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testDeleteAttendantById_NotFound() {
+    void whenDeleteAttendantById_withNonExistentId_thenReturnNotFound() {
         Long id = 1L;
         when(attendantRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -125,7 +125,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testDeleteAttendantById_WithOpenTickets() {
+    void whenDeleteAttendantById_withOpenTickets_thenReturnCannotDelete() {
         Long id = 1L;
         when(attendantRepository.findById(id)).thenReturn(Optional.of(new Attendant()));
         when(ticketRepository.countTicketsByAttendantIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(1L); // Existe 1 chamado aberto
@@ -134,7 +134,7 @@ class AttendantServiceTest {
     }
 
     @Test
-    void testDeleteAttendantById_Success() throws NotFoundDBException {
+    void whenDeleteAttendantById_withExistingId_thenAttendantIsDeletedSuccessfully() throws NotFoundDBException {
         Long id = 1L;
         when(attendantRepository.findById(id)).thenReturn(Optional.of(new Attendant()));
         when(ticketRepository.countTicketsByAttendantIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(0L);

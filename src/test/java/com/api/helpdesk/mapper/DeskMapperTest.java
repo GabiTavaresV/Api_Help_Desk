@@ -12,7 +12,7 @@ class DeskMapperTest {
     private final DeskMapper deskMapper = Mappers.getMapper(DeskMapper.class);
 
     @Test
-    void testDeskToDeskDTO() {
+    void whenConvertDeskToDeskDTO_thenReturnDeskDTO() {
         Desk desk = new Desk();
         desk.setId(1L);
 
@@ -23,14 +23,14 @@ class DeskMapperTest {
     }
 
     @Test
-    void testDeskToDeskDTO_Null() {
+    void whenConvertDeskToDeskDTO_withNullDesk_thenReturnNull() {
         DeskDTO result = deskMapper.deskToDeskDTO(null);
 
         assertThat(result).isNull();
     }
 
     @Test
-    void testDeskDTOToDesk() {
+    void whenConvertDeskDTOToDesk_thenReturnDesk() {
         DeskDTO deskDTO = DeskDTO.builder()
                 .id(1L)
                 .attendant(null)

@@ -12,7 +12,7 @@ class UserMapperTest {
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @Test
-    void testToDTO() {
+    void whenConvertToDTO_thenReturnDTO() {
         Users user = new Users();
         user.setId(1L);
         user.setName("John Doe");
@@ -29,14 +29,14 @@ class UserMapperTest {
     }
 
     @Test
-    void testToDTO_Null() {
+    void whenConvertToDTO_withNull_thenReturnNull() {
         UserDTO result = userMapper.toDTO(null);
 
         assertThat(result).isNull();
     }
 
     @Test
-    void testToEntity() {
+    void whenConvertToEntity_thenReturnEntity() {
         UserDTO userDTO = UserDTO.builder()
                 .id(1L)
                 .name("John Doe")

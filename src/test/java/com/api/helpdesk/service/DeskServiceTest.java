@@ -67,7 +67,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testRegister() {
+    void whenRegisterDesk_thenDeskIsRegistered() {
         deskDTO.setId(1L);
         deskDTO.setAttendant(attendantDTO);
         attendantDTO.setId(1L);
@@ -92,7 +92,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testRegister_MaxTicketsReached() {
+    void whenRegisterDesk_withMaxTicketsReached_thenReturnMaxTicketsReached() {
         deskDTO.setId(1L);
         when(deskRepository.countOpenTicketsByDeskId(deskDTO.getId(), TicketStatus.CONCLUIDO)).thenReturn(5L);
 
@@ -100,7 +100,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testGetAllDesks() {
+    void whenGetAllDesks_thenReturnAllDesks() {
         Pageable pageable = Pageable.ofSize(10);
         Page<Desk> desksPage = new PageImpl<>(List.of(desk));
         when(deskRepository.findAllActiveDesks(pageable)).thenReturn(desksPage);
@@ -114,7 +114,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testGetDeskById() throws NotFoundDBException {
+    void whenGetDeskById_thenReturnDesk() throws NotFoundDBException {
         Long id = 1L;
         when(deskRepository.findActiveDeskById(id)).thenReturn(Optional.of(desk));
         when(deskMapper.deskToDeskDTO(desk)).thenReturn(deskDTO);
@@ -125,7 +125,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testGetDeskById_NotFound() {
+    void whenGetDeskById_withNonExistentId_thenReturnNotFound() {
         Long id = 1L;
         when(deskRepository.findActiveDeskById(id)).thenReturn(Optional.empty());
 
@@ -133,7 +133,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testDeleteDeskById() throws NotFoundDBException {
+    void whenDeleteDeskById_thenDeskIsDeleted() throws NotFoundDBException {
         Long id = 1L;
         when(deskRepository.findById(id)).thenReturn(Optional.of(desk));
 
@@ -143,7 +143,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testDeleteDeskById_NotFound() {
+    void whenDeleteDeskById_withNonExistentId_thenReturnNotFound() {
         Long id = 1L;
         when(deskRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -151,7 +151,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testGetOpenTicketsCountForDesk() {
+    void whenGetOpenTicketsCountForDesk_thenReturnOpenTicketsCount() {
         Long deskId = 1L;
         when(ticketRepository.countTicketsByDeskIdAndStatusNot(deskId, TicketStatus.CONCLUIDO)).thenReturn(3L);
 
@@ -161,7 +161,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testGetDeskDetails() throws NotFoundDBException {
+    void whenGetDeskDetails_thenReturnDeskDetails() throws NotFoundDBException {
         Long deskId = 1L;
         deskDTO.setId(deskId);
         when(deskRepository.findActiveDeskById(deskId)).thenReturn(Optional.of(desk));
@@ -175,7 +175,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testFindAvailableDesks() {
+    void whenFindAvailableDesks_thenReturnAvailableDesks() {
         Desk desk1 = new Desk();
         desk1.setId(1L);
         Desk desk2 = new Desk();
@@ -206,7 +206,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testRegister_AttendantAlreadyAssigned() {
+    void whenRegisterDesk_withAttendantAlreadyAssigned_thenReturnAttendantAlreadyAssigned() {
         deskDTO.setId(1L);
         deskDTO.setAttendant(attendantDTO);
         attendantDTO.setId(1L);
@@ -220,7 +220,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testRegister_AttendantNotFound() {
+    void whenRegisterDesk_withAttendantNotFound_thenReturnAttendantNotFound() {
         deskDTO.setId(1L);
         deskDTO.setAttendant(attendantDTO);
         attendantDTO.setId(1L);
@@ -235,7 +235,7 @@ class DeskServiceTest {
     }
 
     @Test
-    void testDeleteDeskById_HasOpenTickets() {
+    void whenDeleteDeskById_withOpenTickets_thenReturnCannotDelete() {
         Long id = 1L;
         when(deskRepository.findById(id)).thenReturn(Optional.of(desk));
         when(ticketRepository.countTicketsByDeskIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(3L); // Simula chamados não concluídos

@@ -12,7 +12,7 @@ class DeviceMapperTest {
     private final DeviceMapper deviceMapper = Mappers.getMapper(DeviceMapper.class);
 
     @Test
-    void testToDto() {
+    void whenConvertToDTO_thenReturnDTO() {
         Device device = new Device();
         device.setId(1L);
         device.setSerialNumber("ABC123");
@@ -26,14 +26,14 @@ class DeviceMapperTest {
     }
 
     @Test
-    void testToDto_Null() {
+    void whenConvertToDTO_withNull_thenReturnNull() {
         DeviceDTO result = deviceMapper.toDto(null);
 
         assertThat(result).isNull();
     }
 
     @Test
-    void testToEntity() {
+    void whenConvertToEntity_thenReturnEntity() {
         DeviceDTO deviceDTO = DeviceDTO.builder()
                 .id(1L)
                 .serialNumber("ABC123")
