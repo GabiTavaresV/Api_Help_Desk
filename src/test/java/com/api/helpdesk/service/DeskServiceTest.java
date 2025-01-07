@@ -5,6 +5,7 @@ import com.api.helpdesk.dto.DeskDTO;
 import com.api.helpdesk.entity.Attendant;
 import com.api.helpdesk.entity.Desk;
 import com.api.helpdesk.exception.NotFoundDBException;
+import com.api.helpdesk.exception.SoftDeleteException;
 import com.api.helpdesk.mapper.AttendantMapper;
 import com.api.helpdesk.mapper.DeskMapper;
 import com.api.helpdesk.repository.AttendantRepository;
@@ -202,5 +203,43 @@ class DeskServiceTest {
 
         assertThat(availableDesks).hasSize(2);
         assertThat(availableDesks).contains(deskDTO1, deskDTO3);
+    }
+
+    @Test
+    void testRegister_AttendantAlreadyAssigned() {
+        deskDTO.setId(1L);
+        deskDTO.setAttendant(attendantDTO);
+        attendantDTO.setId(1L);
+
+        when(deskRepository.countOpenTicketsByDeskId(deskDTO.getId(), TicketStatus.CONCLUIDO)).thenReturn(0L);
+        when(deskMapper.deskDTOToDesk(deskDTO)).thenReturn(desk);
+        when(attendantService.getAttendantById(attendantDTO.getId())).thenReturn(attendantDTO);
+        when(deskRepository.isAttendantAssigned(attendantDTO.getId())).thenReturn(true); // Simula o atendente já atribuído
+
+        assertThrows(IllegalStateException.class, () -> deskService.register(deskDTO));
+    }
+
+    @Test
+    void testRegister_AttendantNotFound() {
+        deskDTO.setId(1L);
+        deskDTO.setAttendant(attendantDTO);
+        attendantDTO.setId(1L);
+
+        when(deskRepository.countOpenTicketsByDeskId(deskDTO.getId(), TicketStatus.CONCLUIDO)).thenReturn(0L);
+        when(deskMapper.deskDTOToDesk(deskDTO)).thenReturn(desk);
+        when(attendantService.getAttendantById(attendantDTO.getId())).thenReturn(attendantDTO);
+        when(deskRepository.isAttendantAssigned(attendantDTO.getId())).thenReturn(false); // Simula atendente não atribuído
+        when(attendantRepository.findDeletedAttendantById(attendantDTO.getId())).thenReturn(Optional.of(new Attendant())); // Simula atendente deletado
+
+        assertThrows(SoftDeleteException.class, () -> deskService.register(deskDTO));
+    }
+
+    @Test
+    void testDeleteDeskById_HasOpenTickets() {
+        Long id = 1L;
+        when(deskRepository.findById(id)).thenReturn(Optional.of(desk));
+        when(ticketRepository.countTicketsByDeskIdAndNotConcluded(id, TicketStatus.CONCLUIDO)).thenReturn(3L); // Simula chamados não concluídos
+
+        assertThrows(SoftDeleteException.class, () -> deskService.deleteDeskById(id));
     }
 }

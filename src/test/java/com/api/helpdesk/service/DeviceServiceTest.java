@@ -4,6 +4,7 @@ import com.api.helpdesk.dto.DeviceDTO;
 import com.api.helpdesk.entity.Device;
 import com.api.helpdesk.exception.DeviceAlreadyExistsException;
 import com.api.helpdesk.exception.NotFoundDBException;
+import com.api.helpdesk.exception.SoftDeleteException;
 import com.api.helpdesk.mapper.DeviceMapper;
 import com.api.helpdesk.repository.DeviceRepository;
 import com.api.helpdesk.repository.TicketRepository;
@@ -126,5 +127,16 @@ public class DeviceServiceTest {
         when(deviceRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundDBException.class, () -> deviceService.deleteDeviceById(id));
+    }
+
+    @Test
+    void testDeleteDeviceById_HasOpenTickets() {
+        Long id = 1L;
+        when(deviceRepository.findById(id)).thenReturn(Optional.of(device));
+
+        when(ticketRepository.countTicketsByDeviceIdAndNotConcluded(id, TicketStatus.CONCLUIDO))
+                .thenReturn(1L);
+
+        assertThrows(SoftDeleteException.class, () -> deviceService.deleteDeviceById(id));
     }
 }
