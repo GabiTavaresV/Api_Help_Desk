@@ -33,7 +33,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveCriarUsuario() {
+    void whenPostUser_thenCreateUser() {
         UserDTO user = new UserDTO();
         user.setName("John");
         user.setEmail("john@gmail.com");
@@ -51,7 +51,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveRetornarListaDeUsuarios() {
+    void whenGetUsers_thenListAllUsers() {
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         UserDTO user1 = new UserDTO();
         user1.setName("John");
@@ -75,7 +75,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveRetornarUsuarioPorId() {
+    void whenGetUserById_thenReturnUser() {
         Long userId = 1L;
         UserDTO user = new UserDTO();
         user.setName("John");
@@ -92,7 +92,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void deveDeletarUsuario() {
+    void whenDeleteUserById_thenUserIsDeleted() {
         Long userId = 1L;
 
         ResponseEntity<Void> response = userController.delete(userId);

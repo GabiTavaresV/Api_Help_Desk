@@ -73,7 +73,7 @@ public class DeskControllerTest {
     }
 
     @Test
-    void deveDeletarDesk() {
+    void whenDeleteDeskById_thenDeskIsDeleted() {
         Long deskId = 1L;
 
         ResponseEntity<Void> response = deskController.delete(deskId);

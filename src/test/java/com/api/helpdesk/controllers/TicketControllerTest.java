@@ -33,7 +33,7 @@ public class TicketControllerTest {
     }
 
     @Test
-    void deveCriarTicket() {
+    void whenPostTicket_thenCreateTicket() {
         TicketRequest ticketRequest = new TicketRequest();
         TicketDTO createdTicket = new TicketDTO();
         DeskDTO desk = new DeskDTO();
@@ -60,7 +60,7 @@ public class TicketControllerTest {
     }
 
     @Test
-    void deveRetornarListaDeTickets() {
+    void whenGetTickets_thenListAllTickets() {
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         Ticket ticket1 = new Ticket();
         ticket1.setId(1L);
@@ -84,7 +84,7 @@ public class TicketControllerTest {
     }
 
     @Test
-    void deveRetornarTicketPorId() {
+    void whenGetTicketById_thenReturnTicket() {
         Users user = new Users();
         Device device = new Device();
         Desk desk = new Desk();
@@ -109,7 +109,7 @@ public class TicketControllerTest {
     }
 
     @Test
-    void deveRetornarTicketsPorDeskId() {
+    void whenGetTicketsByDeskId_thenReturnTickets() {
         Long deskId = 1L;
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         Ticket ticket1 = new Ticket();
@@ -132,7 +132,7 @@ public class TicketControllerTest {
     }
 
     @Test
-    void deveRetornarTicketsPorCustomerId() {
+    void whenGetTicketsByCustomerId_thenReturnTickets() {
         Long customerId = 1L;
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         Ticket ticket1 = new Ticket();
@@ -155,7 +155,7 @@ public class TicketControllerTest {
     }
 
     @Test
-    void deveDeletarTicket() {
+    void whenDeleteTicketById_thenTicketIsDeleted() {
         Long ticketId = 1L;
 
         ResponseEntity<Void> response = ticketController.delete(ticketId);
@@ -166,7 +166,7 @@ public class TicketControllerTest {
     }
 
     @Test
-    void deveAtualizarStatusDoTicket() {
+    void whenUpdateTicketStatus_thenStatusIsUpdated() {
         Long ticketId = 1L;
         TicketStatusUpdateDTO statusUpdate = new TicketStatusUpdateDTO();
         statusUpdate.setStatus(TicketStatus.CONCLUIDO);

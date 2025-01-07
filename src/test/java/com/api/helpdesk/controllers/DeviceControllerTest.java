@@ -28,7 +28,7 @@ public class DeviceControllerTest {
     }
 
     @Test
-    void deveCriarDispositivo() {
+    void whenPostDevice_thenCreateDevice() {
         DeviceDTO device = new DeviceDTO();
         device.setSerialNumber("BRT0988TESTE");
 
@@ -45,7 +45,7 @@ public class DeviceControllerTest {
     }
 
     @Test
-    void deveRetornarListaDeDispositivos() {
+    void whenGetDevices_thenListAllDevices() {
         Pageable pageable = Pageable.ofSize(10).withPage(0);
         DeviceDTO device1 = new DeviceDTO();
         device1.setSerialNumber("BRT0977TESTE");
@@ -69,7 +69,7 @@ public class DeviceControllerTest {
     }
 
     @Test
-    void deveRetornarDispositivoPorId() {
+    void whenGetDeviceById_thenReturnDevice() {
         Long deviceId = 1L;
         DeviceDTO device = new DeviceDTO();
         device.setSerialNumber("BRC0860TESTE");
@@ -86,7 +86,7 @@ public class DeviceControllerTest {
     }
 
     @Test
-    void deveDeletarDispositivo() {
+    void whenDeleteDeviceById_thenDeviceIsDeleted() {
         Long deviceId = 1L;
 
         ResponseEntity<Void> response = deviceController.delete(deviceId);
